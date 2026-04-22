@@ -19,7 +19,7 @@ public final class UiHelper {
     public static JPanel createPagePanel() {
         JPanel panel = new JPanel(new BorderLayout(20, 20));
         panel.setBorder(new EmptyBorder(30, 45, 30, 45));
-        panel.setBackground(new Color(245, 247, 250));
+        panel.setBackground(new Color(230, 230, 230));
         return panel;
     }
 

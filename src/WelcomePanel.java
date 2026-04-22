@@ -16,7 +16,7 @@ public class WelcomePanel extends JPanel {
         headerPanel.setOpaque(false);
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 
-        JLabel companyLabel = UiHelper.createTitleLabel("Kerem Auto Rental");
+        JLabel companyLabel = UiHelper.createTitleLabel("Kepler Auto Rental");
         JLabel appLabel = UiHelper.createSubtitleLabel("Car Rental Agency Management System");
         JLabel instructionLabel = UiHelper.createSubtitleLabel("Select your role to continue");
 
