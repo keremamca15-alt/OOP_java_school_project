@@ -1,0 +1,9 @@
+node_modules/
+*.log
+.env
+example/
+*.class
+*.exe
+*.tmp
+.claude
+
