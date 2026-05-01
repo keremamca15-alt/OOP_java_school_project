@@ -1,10 +1,9 @@
-import java.util.List;
+import java.util.ArrayList;
 
 public class Mechanic extends Employee {
 
-	public List<MaintenanceTask> viewMaintenanceQueue() {
-		// TODO - implement Mechanic.viewMaintenanceQueue
-		throw new UnsupportedOperationException();
+	public ArrayList<MaintenanceTask> viewMaintenanceQueue() {
+		return new ArrayList<>();
 	}
 
 	/**
@@ -12,8 +11,6 @@ public class Mechanic extends Employee {
 	 * @param record
 	 */
 	public void performMaintenance(MaintenanceTask task) {
-		// TODO - implement Mechanic.performMaintenance
-		throw new UnsupportedOperationException();
 	}
 
 }

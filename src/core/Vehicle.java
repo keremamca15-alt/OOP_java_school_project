@@ -20,8 +20,7 @@ public abstract class Vehicle {
 	 * @param days
 	 */
 	public double calculateRentalCost(int days) {
-		// TODO - implement Vehicle.calculateRentalCost
-		throw new UnsupportedOperationException();
+		return 0.0;
 	}
 
 	/**
@@ -30,18 +29,15 @@ public abstract class Vehicle {
 	 * @param endDate
 	 */
 	public boolean isAvailable(Date startDate, Date endDate) {
-		// TODO - implement Vehicle.isAvailable
-		throw new UnsupportedOperationException();
+		return false;
 	}
 
 	public double calculateDistanceToNextMaintenance() {
-		// TODO - implement Vehicle.calculateDistanceToNextMaintenance
-		throw new UnsupportedOperationException();
+		return 0.0;
 	}
 
 	public boolean needsMaintenance() {
-		// TODO - implement Vehicle.needsMaintenance
-		throw new UnsupportedOperationException();
+		return false;
 	}
 
 }

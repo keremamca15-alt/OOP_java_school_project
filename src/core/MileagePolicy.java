@@ -10,8 +10,7 @@ public enum MileagePolicy {
 	 * @param km
 	 */
 	public double calculateExtraCharge(int days, int km) {
-		// TODO - implement MileagePolicy.calculateExtraCharge
-		throw new UnsupportedOperationException();
+		return 0.0;
 	}
 
 }

@@ -8,13 +8,9 @@ public class MaintenanceTask {
 	private MaintenanceStatus status;
 
 	public void scheduleMaintenance() {
-		// TODO - implement MaintenanceTask.scheduleMaintenance
-		throw new UnsupportedOperationException();
 	}
 
 	public void completeMaintenance() {
-		// TODO - implement MaintenanceTask.completeMaintenance
-		throw new UnsupportedOperationException();
 	}
 
 }

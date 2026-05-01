@@ -1,5 +1,5 @@
 import java.util.Date;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Branch {
 
@@ -12,8 +12,6 @@ public class Branch {
 	 * @param vehicle
 	 */
 	public void addVehicle(Vehicle vehicle) {
-		// TODO - implement Branch.addVehicle
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -21,8 +19,6 @@ public class Branch {
 	 * @param vehicleID
 	 */
 	public void removeVehicle(int vehicleID) {
-		// TODO - implement Branch.removeVehicle
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -30,9 +26,8 @@ public class Branch {
 	 * @param startDate
 	 * @param endDate
 	 */
-	public List<Vehicle> findAvailableVehicles(Date startDate, Date endDate) {
-		// TODO - implement Branch.findAvailableVehicles
-		throw new UnsupportedOperationException();
+	public ArrayList<Vehicle> findAvailableVehicles(Date startDate, Date endDate) {
+		return new ArrayList<>();
 	}
 
 }

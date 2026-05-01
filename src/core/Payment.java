@@ -9,8 +9,7 @@ public class Payment {
 	private int customerID;
 
 	public boolean processPayment() {
-		// TODO - implement Payment.processPayment
-		throw new UnsupportedOperationException();
+		return false;
 	}
 
 }

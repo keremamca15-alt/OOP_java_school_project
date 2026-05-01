@@ -9,8 +9,7 @@ public enum LoyaltyTier {
 	 * @param points
 	 */
 	public LoyaltyTier fromPoints(int points) {
-		// TODO - implement LoyaltyTier.fromPoints
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
 }

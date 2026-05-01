@@ -9,8 +9,7 @@ public enum InsuranceOption {
 	 * @param days
 	 */
 	public double calculateCost(int days) {
-		// TODO - implement InsuranceOption.calculateCost
-		throw new UnsupportedOperationException();
+		return 0.0;
 	}
 
 }

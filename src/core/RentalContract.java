@@ -16,18 +16,13 @@ public class RentalContract {
 	 * @param addon
 	 */
 	public void addAddon(Addon addon) {
-		// TODO - implement RentalContract.addAddon
-		throw new UnsupportedOperationException();
 	}
 
 	public int calculateUsedMileage() {
-		// TODO - implement RentalContract.calculateUsedMileage
-		throw new UnsupportedOperationException();
+		return 0;
 	}
 
 	public void closeContract() {
-		// TODO - implement RentalContract.closeContract
-		throw new UnsupportedOperationException();
 	}
 
 }

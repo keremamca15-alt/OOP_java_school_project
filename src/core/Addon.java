@@ -10,8 +10,7 @@ public class Addon {
 	 * @param days
 	 */
 	public double calculateCost(int days) {
-		// TODO - implement Addon.calculateCost
-		throw new UnsupportedOperationException();
+		return 0.0;
 	}
 
 }

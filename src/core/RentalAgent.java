@@ -5,8 +5,6 @@ public class RentalAgent extends Employee {
 	 * @param reservation
 	 */
 	public void processPickup(Reservation reservation) {
-		// TODO - implement RentalAgent.processPickup
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -14,8 +12,7 @@ public class RentalAgent extends Employee {
 	 * @param reservation
 	 */
 	public Invoice processReturn(Reservation reservation) {
-		// TODO - implement RentalAgent.processReturn
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
 	/**
@@ -23,8 +20,7 @@ public class RentalAgent extends Employee {
 	 * @param vehicle
 	 */
 	public DamageAssessment assessDamage(Vehicle vehicle) {
-		// TODO - implement RentalAgent.assessDamage
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
 }

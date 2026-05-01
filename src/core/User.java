@@ -6,8 +6,6 @@ public abstract class User {
 	private String email;
 
 	public void logout() {
-		// TODO - implement User.logout
-		throw new UnsupportedOperationException();
 	}
 
 }

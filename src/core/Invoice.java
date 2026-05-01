@@ -10,8 +10,7 @@ public class Invoice {
 	private double additionalCharges;
 
 	public double calculateTotal() {
-		// TODO - implement Invoice.calculateTotal
-		throw new UnsupportedOperationException();
+		return 0.0;
 	}
 
 	/**
@@ -19,13 +18,10 @@ public class Invoice {
 	 * @param customer
 	 */
 	public void applyDiscount(Customer customer) {
-		// TODO - implement Invoice.applyDiscount
-		throw new UnsupportedOperationException();
 	}
 
 	public double calculateRefund() {
-		// TODO - implement Invoice.calculateRefund
-		throw new UnsupportedOperationException();
+		return 0.0;
 	}
 
 }

@@ -10,18 +10,13 @@ public class Reservation {
 	private double depositAmount;
 
 	public void confirmReservation() {
-		// TODO - implement Reservation.confirmReservation
-		throw new UnsupportedOperationException();
 	}
 
 	public void cancelReservation() {
-		// TODO - implement Reservation.cancelReservation
-		throw new UnsupportedOperationException();
 	}
 
 	public int calculateDuration() {
-		// TODO - implement Reservation.calculateDuration
-		throw new UnsupportedOperationException();
+		return 0;
 	}
 
 	/**
@@ -29,8 +24,6 @@ public class Reservation {
 	 * @param addon
 	 */
 	public void addAddon(Addon addon) {
-		// TODO - implement Reservation.addAddon
-		throw new UnsupportedOperationException();
 	}
 
 }

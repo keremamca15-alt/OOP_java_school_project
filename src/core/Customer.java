@@ -1,23 +1,20 @@
-import java.util.List;
+import java.util.ArrayList;
 
 public class Customer extends User {
 
 	private int loyaltyPoints;
 	private LoyaltyTier loyaltyTier;
 
-	public List<Vehicle> searchAvailableVehicles() {
-		// TODO - implement Customer.searchAvailableVehicles
-		throw new UnsupportedOperationException();
+	public ArrayList<Vehicle> searchAvailableVehicles() {
+		return new ArrayList<>();
 	}
 
 	public Reservation makeReservation() {
-		// TODO - implement Customer.makeReservation
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
-	public List<Reservation> viewMyReservations() {
-		// TODO - implement Customer.viewMyReservations
-		throw new UnsupportedOperationException();
+	public ArrayList<Reservation> viewMyReservations() {
+		return new ArrayList<>();
 	}
 
 	/**
@@ -25,8 +22,6 @@ public class Customer extends User {
 	 * @param amount
 	 */
 	public void earnPoints(double amount) {
-		// TODO - implement Customer.earnPoints
-		throw new UnsupportedOperationException();
 	}
 
 }
