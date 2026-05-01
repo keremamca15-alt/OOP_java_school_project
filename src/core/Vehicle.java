@@ -167,7 +167,11 @@ public abstract class Vehicle {
 	 * @param days
 	 */
 	public double calculateRentalCost(int days) {
-		return 0.0;
+		double insuranceCost = 0.0;
+		if (insuranceOption != null) {
+			insuranceCost = insuranceOption.calculateCost(days);
+		}
+		return dailyRate * days + insuranceCost;
 	}
 
 	/**
@@ -180,11 +184,11 @@ public abstract class Vehicle {
 	}
 
 	public double calculateDistanceToNextMaintenance() {
-		return 0.0;
+		return maintenanceInterval - (currentMileage - lastMaintenanceMileage);
 	}
 
 	public boolean needsMaintenance() {
-		return false;
+		return calculateDistanceToNextMaintenance() <= 0;
 	}
 
 }

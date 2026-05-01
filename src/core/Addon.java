@@ -54,7 +54,7 @@ public class Addon {
 	 * @param days
 	 */
 	public double calculateCost(int days) {
-		return 0.0;
+		return dailyPrice * days;
 	}
 
 }

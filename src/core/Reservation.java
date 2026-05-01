@@ -122,7 +122,12 @@ public class Reservation {
 	}
 
 	public int calculateDuration() {
-		return 0;
+		if (startDate == null || endDate == null) {
+			return 0;
+		}
+		long difference = endDate.getTime() - startDate.getTime();
+		long dayInMillis = 24L * 60 * 60 * 1000;
+		return (int) (difference / dayInMillis);
 	}
 
 	/**

@@ -142,7 +142,7 @@ public class RentalContract {
 	}
 
 	public int calculateUsedMileage() {
-		return 0;
+		return finalMileage - initialMileage;
 	}
 
 	public void closeContract() {
