@@ -1,7 +1,8 @@
+package core;
+
 public enum PaymentPurpose {
-	PREPAYMENT,
 	DEPOSIT,
-	PICKUP_PAYMENT,
+	PREPAYMENT,
 	ADDITIONAL_CHARGE,
 	REFUND
 }

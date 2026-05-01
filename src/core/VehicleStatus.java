@@ -1,6 +1,8 @@
+package core;
+
 public enum VehicleStatus {
 	AVAILABLE,
-	RESERVED,
 	RENTED,
-	MAINTENANCE
+	IN_MAINTENANCE,
+	OUT_OF_SERVICE
 }

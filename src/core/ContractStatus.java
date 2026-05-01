@@ -1,5 +1,7 @@
+package core;
+
 public enum ContractStatus {
-	OPEN,
+	ACTIVE,
 	CLOSED,
-	CANCELLED
+	OVERDUE
 }

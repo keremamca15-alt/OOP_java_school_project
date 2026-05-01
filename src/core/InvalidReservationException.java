@@ -1,3 +1,5 @@
+package core;
+
 public class InvalidReservationException extends Exception {
 
 	public InvalidReservationException(String message) {

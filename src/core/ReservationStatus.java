@@ -1,3 +1,5 @@
+package core;
+
 public enum ReservationStatus {
 	PENDING,
 	CONFIRMED,

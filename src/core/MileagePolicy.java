@@ -1,5 +1,9 @@
+package core;
+
 public enum MileagePolicy {
-	;
+	LIMITED,
+	STANDARD,
+	UNLIMITED;
 
 	private int dailyKmLimit;
 	private double extraKmFee;

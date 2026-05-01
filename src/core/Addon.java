@@ -1,3 +1,5 @@
+package core;
+
 public class Addon {
 
 	private int addonID;

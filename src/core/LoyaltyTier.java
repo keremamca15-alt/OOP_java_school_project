@@ -1,5 +1,9 @@
+package core;
+
 public enum LoyaltyTier {
-	;
+	BRONZE,
+	SILVER,
+	GOLD;
 
 	private double discountRate;
 	private int minPoints;

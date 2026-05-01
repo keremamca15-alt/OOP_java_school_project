@@ -1,5 +1,9 @@
+package core;
+
 public enum InsuranceOption {
-	;
+	BASIC,
+	STANDARD,
+	PREMIUM;
 
 	private double dailyFee;
 	private double coverageLimit;
