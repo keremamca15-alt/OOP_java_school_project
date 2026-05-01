@@ -1,6 +1,34 @@
 package core;
 
+import java.util.ArrayList;
+
 public class BranchManager extends Employee {
+
+	private Branch managedBranch;
+	private ArrayList<BranchReport> generatedReports = new ArrayList<>();
+
+	public BranchManager() {
+	}
+
+	public BranchManager(Branch managedBranch) {
+		this.managedBranch = managedBranch;
+	}
+
+	public Branch getManagedBranch() {
+		return managedBranch;
+	}
+
+	public void setManagedBranch(Branch managedBranch) {
+		this.managedBranch = managedBranch;
+	}
+
+	public ArrayList<BranchReport> getGeneratedReports() {
+		return generatedReports;
+	}
+
+	public void setGeneratedReports(ArrayList<BranchReport> generatedReports) {
+		this.generatedReports = generatedReports;
+	}
 
 	/**
 	 * 

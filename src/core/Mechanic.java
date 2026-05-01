@@ -4,8 +4,21 @@ import java.util.ArrayList;
 
 public class Mechanic extends Employee {
 
+	private ArrayList<MaintenanceTask> maintenanceTasks = new ArrayList<>();
+
+	public Mechanic() {
+	}
+
+	public ArrayList<MaintenanceTask> getMaintenanceTasks() {
+		return maintenanceTasks;
+	}
+
+	public void setMaintenanceTasks(ArrayList<MaintenanceTask> maintenanceTasks) {
+		this.maintenanceTasks = maintenanceTasks;
+	}
+
 	public ArrayList<MaintenanceTask> viewMaintenanceQueue() {
-		return new ArrayList<>();
+		return maintenanceTasks;
 	}
 
 	/**
@@ -13,6 +26,7 @@ public class Mechanic extends Employee {
 	 * @param record
 	 */
 	public void performMaintenance(MaintenanceTask task) {
+		maintenanceTasks.add(task);
 	}
 
 }
