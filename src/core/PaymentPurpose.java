@@ -1,0 +1,7 @@
+public enum PaymentPurpose {
+	PREPAYMENT,
+	DEPOSIT,
+	PICKUP_PAYMENT,
+	ADDITIONAL_CHARGE,
+	REFUND
+}

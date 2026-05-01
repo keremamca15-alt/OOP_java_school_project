@@ -6,4 +6,5 @@ example/
 *.exe
 *.tmp
 .claude
+data/
 
