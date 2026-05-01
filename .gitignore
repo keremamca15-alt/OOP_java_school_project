@@ -7,4 +7,6 @@ example/
 *.tmp
 .claude
 data/
+out/
+.vscode
 
