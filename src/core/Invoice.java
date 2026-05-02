@@ -115,7 +115,7 @@ public class Invoice {
 	}
 
 	public void addPayment(Payment payment) {
-		if (payment != null && payment.processPayment()) {
+		if (payment != null && payment.processPayment() && !payments.contains(payment)) {
 			payments.add(payment);
 			payment.setInvoice(this);
 		}

@@ -124,7 +124,7 @@ public class Reservation {
 	}
 
 	public int calculateDuration() {
-		if (startDate == null || endDate == null) {
+		if (startDate == null || endDate == null || !endDate.after(startDate)) {
 			return 0;
 		}
 		long difference = endDate.getTime() - startDate.getTime();

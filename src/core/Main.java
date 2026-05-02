@@ -7,7 +7,8 @@ import java.io.FileNotFoundException;
 
 public class Main {
 
-	public static void main(String[] args) throws FileNotFoundException, InvalidFileFormatException {
+	public static void main(String[] args) throws FileNotFoundException, InvalidFileFormatException,
+			InvalidReservationException, VehicleNotAvailableException {
 		Date startDate = createDate(2026, Calendar.MAY, 1);
 		Date endDate = createDate(2026, Calendar.MAY, 5);
 		Date searchStartDate = createDate(2026, Calendar.MAY, 2);
@@ -68,6 +69,7 @@ public class Main {
 		double extraKmCharge = suv.getMileagePolicy().calculateExtraCharge(days, usedMileage);
 
 		Reservation customerReservation = customer.makeReservation(2, economy, searchStartDate, searchEndDate);
+		ArrayList<Vehicle> searchedVehicles = customer.searchAvailableVehicles(branch, searchStartDate, searchEndDate);
 		customer.earnPoints(500.0);
 
 		Payment validPayment = new Payment(1, 120.0, startDate, PaymentPurpose.PREPAYMENT, 1);
@@ -113,6 +115,7 @@ public class Main {
 		reservation.confirmReservation();
 		System.out.println("Reservation status after confirm: " + reservation.getStatus());
 		System.out.println("Available vehicles for search range: " + branch.findAvailableVehicles(searchStartDate, searchEndDate).size());
+		System.out.println("Customer search result count: " + searchedVehicles.size());
 
 		System.out.println("\n== Costs ==");
 		System.out.println("Addon cost: " + addonCost);

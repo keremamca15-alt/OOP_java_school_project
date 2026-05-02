@@ -215,7 +215,6 @@ public class FileManager {
 			Customer customer = findCustomerByID(customers, payment.getCustomerID());
 			if (customer != null) {
 				payment.setCustomer(customer);
-				customer.getPayments().add(payment);
 			}
 			payments.add(payment);
 		}

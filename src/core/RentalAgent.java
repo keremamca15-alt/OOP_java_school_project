@@ -31,38 +31,58 @@ public class RentalAgent extends Employee {
 	 * 
 	 * @param reservation
 	 */
-	public void processPickup(Reservation reservation) {
-		if (reservation == null || reservation.getVehicle() == null) {
-			return;
+	public void processPickup(Reservation reservation) throws InvalidReservationException, VehicleNotAvailableException {
+		validatePickup(reservation);
+
+		RentalContract contract = reservation.getRentalContract();
+		if (contract == null) {
+			contract = new RentalContract(
+					rentalContracts.size() + 1,
+					reservation.getStartDate(),
+					reservation.getEndDate(),
+					ContractStatus.ACTIVE);
+			contract.setReservation(reservation);
+			contract.setRentalAgent(this);
+			contract.setInitialMileage(reservation.getVehicle().getCurrentMileage());
+			reservation.setRentalContract(contract);
+			rentalContracts.add(contract);
+		} else {
+			contract.setStatus(ContractStatus.ACTIVE);
+			contract.setRentalAgent(this);
+			if (!rentalContracts.contains(contract)) {
+				rentalContracts.add(contract);
+			}
 		}
 
-		RentalContract contract = new RentalContract(
-				rentalContracts.size() + 1,
-				reservation.getStartDate(),
-				reservation.getEndDate(),
-				ContractStatus.ACTIVE);
-		contract.setReservation(reservation);
-		contract.setRentalAgent(this);
-		contract.setInitialMileage(reservation.getVehicle().getCurrentMileage());
-
-		reservation.setRentalContract(contract);
 		reservation.getVehicle().setStatus(VehicleStatus.RENTED);
-		rentalContracts.add(contract);
 	}
 
 	/**
 	 * 
 	 * @param reservation
 	 */
-	public Invoice processReturn(Reservation reservation) {
+	public Invoice processReturn(Reservation reservation) throws InvalidReservationException {
 		return processReturn(reservation, null);
 	}
 
-	public Invoice processReturn(Reservation reservation, DamageAssessment damageAssessment) {
-		if (reservation == null || reservation.getVehicle() == null || reservation.getRentalContract() == null) {
-			return null;
-		}
+	public Invoice processReturn(Reservation reservation, DamageAssessment damageAssessment)
+			throws InvalidReservationException {
+		validateReturn(reservation);
+		return createReturnInvoice(reservation, damageAssessment);
+	}
 
+	public Invoice processReturn(Reservation reservation, DamageAssessment damageAssessment, int finalMileage)
+			throws InvalidReservationException {
+		validateReturn(reservation);
+		RentalContract contract = reservation.getRentalContract();
+		if (finalMileage < contract.getInitialMileage()) {
+			throw new InvalidReservationException("Final mileage cannot be lower than initial mileage.");
+		}
+		contract.setFinalMileage(finalMileage);
+		return createReturnInvoice(reservation, damageAssessment);
+	}
+
+	private Invoice createReturnInvoice(Reservation reservation, DamageAssessment damageAssessment) {
 		RentalContract contract = reservation.getRentalContract();
 		Vehicle vehicle = reservation.getVehicle();
 		int days = reservation.calculateDuration();
@@ -78,7 +98,7 @@ public class RentalAgent extends Employee {
 			damageFee = damageAssessment.getDamageCost();
 		}
 
-		Invoice invoice = new Invoice(rentalContracts.size(), baseAmount, damageFee, addonFee);
+		Invoice invoice = new Invoice(createNextInvoiceID(), baseAmount, damageFee, addonFee);
 		invoice.setRentalContract(contract);
 		if (damageAssessment != null) {
 			invoice.setDamageAssessment(damageAssessment);
@@ -87,6 +107,7 @@ public class RentalAgent extends Employee {
 		contract.setInvoice(invoice);
 		contract.closeContract();
 		vehicle.setStatus(VehicleStatus.AVAILABLE);
+		reservation.setStatus(ReservationStatus.COMPLETED);
 		return invoice;
 	}
 
@@ -113,6 +134,42 @@ public class RentalAgent extends Employee {
 		damageAssessments.add(assessment);
 		vehicle.getDamageAssessments().add(assessment);
 		return assessment;
+	}
+
+	private void validatePickup(Reservation reservation)
+			throws InvalidReservationException, VehicleNotAvailableException {
+		if (reservation == null) {
+			throw new InvalidReservationException("Reservation cannot be empty.");
+		}
+		if (reservation.getVehicle() == null) {
+			throw new InvalidReservationException("Reservation vehicle cannot be empty.");
+		}
+		if (reservation.getStatus() != ReservationStatus.CONFIRMED) {
+			throw new InvalidReservationException("Only confirmed reservations can be picked up.");
+		}
+		Vehicle vehicle = reservation.getVehicle();
+		if (vehicle.getStatus() != VehicleStatus.AVAILABLE) {
+			throw new VehicleNotAvailableException("Vehicle is not available for pickup.");
+		}
+	}
+
+	private void validateReturn(Reservation reservation) throws InvalidReservationException {
+		if (reservation == null || reservation.getVehicle() == null || reservation.getRentalContract() == null) {
+			throw new InvalidReservationException("Reservation return information is incomplete.");
+		}
+		if (reservation.getRentalContract().getStatus() != ContractStatus.ACTIVE) {
+			throw new InvalidReservationException("Only active contracts can be returned.");
+		}
+	}
+
+	private int createNextInvoiceID() {
+		int maxInvoiceID = 0;
+		for (RentalContract contract : rentalContracts) {
+			if (contract.getInvoice() != null && contract.getInvoice().getInvoiceID() > maxInvoiceID) {
+				maxInvoiceID = contract.getInvoice().getInvoiceID();
+			}
+		}
+		return maxInvoiceID + 1;
 	}
 
 }

@@ -55,18 +55,26 @@ public class Customer extends User {
 		return new ArrayList<>();
 	}
 
+	public ArrayList<Vehicle> searchAvailableVehicles(Branch branch, Date startDate, Date endDate) {
+		if (branch == null || !isValidDateRange(startDate, endDate)) {
+			return new ArrayList<>();
+		}
+		return branch.findAvailableVehicles(startDate, endDate);
+	}
+
 	public Reservation makeReservation() {
 		return new Reservation();
 	}
 
-	public Reservation makeReservation(int reservationID, Vehicle vehicle, Date startDate, Date endDate) {
+	public Reservation makeReservation(int reservationID, Vehicle vehicle, Date startDate, Date endDate)
+			throws InvalidReservationException, VehicleNotAvailableException {
+		validateReservationRequest(vehicle, startDate, endDate);
+
 		Reservation reservation = new Reservation(reservationID, startDate, endDate, ReservationStatus.PENDING);
 		reservation.setCustomer(this);
 		reservation.setVehicle(vehicle);
 		reservations.add(reservation);
-		if (vehicle != null) {
-			vehicle.getReservations().add(reservation);
-		}
+		vehicle.getReservations().add(reservation);
 		return reservation;
 	}
 
@@ -82,6 +90,23 @@ public class Customer extends User {
 		int earnedPoints = (int) (amount / 10);
 		loyaltyPoints += earnedPoints;
 		loyaltyTier = LoyaltyTier.fromPoints(loyaltyPoints);
+	}
+
+	private void validateReservationRequest(Vehicle vehicle, Date startDate, Date endDate)
+			throws InvalidReservationException, VehicleNotAvailableException {
+		if (vehicle == null) {
+			throw new InvalidReservationException("Reservation vehicle cannot be empty.");
+		}
+		if (!isValidDateRange(startDate, endDate)) {
+			throw new InvalidReservationException("Reservation dates are not valid.");
+		}
+		if (!vehicle.isAvailable(startDate, endDate)) {
+			throw new VehicleNotAvailableException("Vehicle is not available for selected dates.");
+		}
+	}
+
+	private boolean isValidDateRange(Date startDate, Date endDate) {
+		return startDate != null && endDate != null && endDate.after(startDate);
 	}
 
 }

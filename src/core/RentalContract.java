@@ -66,7 +66,9 @@ public class RentalContract {
 	}
 
 	public void setDepositAmount(double depositAmount) {
-		this.depositAmount = depositAmount;
+		if (depositAmount >= 0) {
+			this.depositAmount = depositAmount;
+		}
 	}
 
 	public int getInitialMileage() {
@@ -74,7 +76,9 @@ public class RentalContract {
 	}
 
 	public void setInitialMileage(int initialMileage) {
-		this.initialMileage = initialMileage;
+		if (initialMileage >= 0) {
+			this.initialMileage = initialMileage;
+		}
 	}
 
 	public int getFinalMileage() {
@@ -82,7 +86,9 @@ public class RentalContract {
 	}
 
 	public void setFinalMileage(int finalMileage) {
-		this.finalMileage = finalMileage;
+		if (finalMileage >= 0) {
+			this.finalMileage = finalMileage;
+		}
 	}
 
 	public ContractStatus getStatus() {
@@ -99,6 +105,9 @@ public class RentalContract {
 
 	public void setReservation(Reservation reservation) {
 		this.reservation = reservation;
+		if (reservation != null && reservation.getRentalContract() != this) {
+			reservation.setRentalContract(this);
+		}
 	}
 
 	public RentalAgent getRentalAgent() {
@@ -115,6 +124,9 @@ public class RentalContract {
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
+		if (invoice != null && invoice.getRentalContract() != this) {
+			invoice.setRentalContract(this);
+		}
 	}
 
 	public Payment getPickupPayment() {
@@ -123,6 +135,9 @@ public class RentalContract {
 
 	public void setPickupPayment(Payment pickupPayment) {
 		this.pickupPayment = pickupPayment;
+		if (pickupPayment != null && pickupPayment.getRentalContract() != this) {
+			pickupPayment.setRentalContract(this);
+		}
 	}
 
 	public ArrayList<Addon> getAddons() {
@@ -130,7 +145,12 @@ public class RentalContract {
 	}
 
 	public void setAddons(ArrayList<Addon> addons) {
-		this.addons = addons;
+		this.addons = new ArrayList<>();
+		if (addons != null) {
+			for (Addon addon : addons) {
+				addAddon(addon);
+			}
+		}
 	}
 
 	/**
@@ -138,16 +158,35 @@ public class RentalContract {
 	 * @param addon
 	 */
 	public void addAddon(Addon addon) {
-		addons.add(addon);
+		if (addon != null && !addons.contains(addon)) {
+			addons.add(addon);
+		}
 	}
 
 	public int calculateUsedMileage() {
+		if (finalMileage < initialMileage) {
+			return 0;
+		}
 		return finalMileage - initialMileage;
 	}
 
 	public void closeContract() {
 		status = ContractStatus.CLOSED;
 		actualReturnDate = new Date();
+	}
+
+	public double calculateDepositRefund() {
+		if (invoice == null) {
+			return depositAmount;
+		}
+		double remainingAmount = invoice.calculateRemainingAmount();
+		if (remainingAmount <= 0) {
+			return depositAmount;
+		}
+		if (remainingAmount >= depositAmount) {
+			return 0.0;
+		}
+		return depositAmount - remainingAmount;
 	}
 
 }

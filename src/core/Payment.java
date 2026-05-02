@@ -71,6 +71,12 @@ public class Payment {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+		if (customer != null) {
+			customerID = customer.getUserID();
+			if (!customer.getPayments().contains(this)) {
+				customer.getPayments().add(this);
+			}
+		}
 	}
 
 	public Reservation getReservation() {
@@ -79,6 +85,9 @@ public class Payment {
 
 	public void setReservation(Reservation reservation) {
 		this.reservation = reservation;
+		if (reservation != null && paymentPurpose == PaymentPurpose.PREPAYMENT) {
+			reservation.setPrepayment(this);
+		}
 	}
 
 	public RentalContract getRentalContract() {
@@ -87,6 +96,10 @@ public class Payment {
 
 	public void setRentalContract(RentalContract rentalContract) {
 		this.rentalContract = rentalContract;
+		if (rentalContract != null && rentalContract.getPickupPayment() != this
+				&& paymentPurpose == PaymentPurpose.DEPOSIT) {
+			rentalContract.setPickupPayment(this);
+		}
 	}
 
 	public Invoice getInvoice() {
@@ -95,10 +108,14 @@ public class Payment {
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
+		if (invoice != null && !invoice.getPayments().contains(this)) {
+			invoice.addPayment(this);
+		}
 	}
 
 	public boolean processPayment() {
-		return amount > 0 && paymentDate != null && paymentPurpose != null;
+		return amount > 0 && paymentDate != null && paymentPurpose != null
+				&& (customer != null || customerID > 0);
 	}
 
 }
