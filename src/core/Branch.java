@@ -84,6 +84,7 @@ public class Branch {
 	 */
 	public void addVehicle(Vehicle vehicle) {
 		vehicles.add(vehicle);
+		vehicle.setBranch(this);
 	}
 
 	/**
@@ -100,7 +101,13 @@ public class Branch {
 	 * @param endDate
 	 */
 	public ArrayList<Vehicle> findAvailableVehicles(Date startDate, Date endDate) {
-		return new ArrayList<>();
+		ArrayList<Vehicle> availableVehicles = new ArrayList<>();
+		for (Vehicle vehicle : vehicles) {
+			if (vehicle.isAvailable(startDate, endDate)) {
+				availableVehicles.add(vehicle);
+			}
+		}
+		return availableVehicles;
 	}
 
 }

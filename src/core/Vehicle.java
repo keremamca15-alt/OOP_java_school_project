@@ -180,7 +180,27 @@ public abstract class Vehicle {
 	 * @param endDate
 	 */
 	public boolean isAvailable(Date startDate, Date endDate) {
-		return false;
+		if (status != VehicleStatus.AVAILABLE || startDate == null || endDate == null) {
+			return false;
+		}
+
+		for (Reservation reservation : reservations) {
+			if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+				continue;
+			}
+			if (datesOverlap(startDate, endDate, reservation.getStartDate(), reservation.getEndDate())) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private boolean datesOverlap(Date startDate, Date endDate, Date reservedStartDate, Date reservedEndDate) {
+		if (reservedStartDate == null || reservedEndDate == null) {
+			return false;
+		}
+		return startDate.before(reservedEndDate) && endDate.after(reservedStartDate);
 	}
 
 	public double calculateDistanceToNextMaintenance() {

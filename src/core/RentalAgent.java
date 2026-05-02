@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class RentalAgent extends Employee {
 
@@ -31,6 +32,22 @@ public class RentalAgent extends Employee {
 	 * @param reservation
 	 */
 	public void processPickup(Reservation reservation) {
+		if (reservation == null || reservation.getVehicle() == null) {
+			return;
+		}
+
+		RentalContract contract = new RentalContract(
+				rentalContracts.size() + 1,
+				reservation.getStartDate(),
+				reservation.getEndDate(),
+				ContractStatus.ACTIVE);
+		contract.setReservation(reservation);
+		contract.setRentalAgent(this);
+		contract.setInitialMileage(reservation.getVehicle().getCurrentMileage());
+
+		reservation.setRentalContract(contract);
+		reservation.getVehicle().setStatus(VehicleStatus.RENTED);
+		rentalContracts.add(contract);
 	}
 
 	/**
@@ -38,7 +55,26 @@ public class RentalAgent extends Employee {
 	 * @param reservation
 	 */
 	public Invoice processReturn(Reservation reservation) {
-		return null;
+		if (reservation == null || reservation.getVehicle() == null || reservation.getRentalContract() == null) {
+			return null;
+		}
+
+		RentalContract contract = reservation.getRentalContract();
+		Vehicle vehicle = reservation.getVehicle();
+		int days = reservation.calculateDuration();
+
+		double baseAmount = vehicle.calculateRentalCost(days);
+		double addonFee = 0.0;
+		for (Addon addon : contract.getAddons()) {
+			addonFee += addon.calculateCost(days);
+		}
+
+		Invoice invoice = new Invoice(rentalContracts.size(), baseAmount, 0.0, addonFee);
+		invoice.setRentalContract(contract);
+		contract.setInvoice(invoice);
+		contract.closeContract();
+		vehicle.setStatus(VehicleStatus.AVAILABLE);
+		return invoice;
 	}
 
 	/**
@@ -46,7 +82,24 @@ public class RentalAgent extends Employee {
 	 * @param vehicle
 	 */
 	public DamageAssessment assessDamage(Vehicle vehicle) {
-		return null;
+		return assessDamage(vehicle, "Assessment pending", 0.0);
+	}
+
+	public DamageAssessment assessDamage(Vehicle vehicle, String description, double damageCost) {
+		if (vehicle == null) {
+			return null;
+		}
+
+		DamageAssessment assessment = new DamageAssessment(
+				damageAssessments.size() + 1,
+				new Date(),
+				description,
+				damageCost);
+		assessment.setVehicle(vehicle);
+		assessment.setRentalAgent(this);
+		damageAssessments.add(assessment);
+		vehicle.getDamageAssessments().add(assessment);
+		return assessment;
 	}
 
 }

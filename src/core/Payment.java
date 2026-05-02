@@ -98,7 +98,7 @@ public class Payment {
 	}
 
 	public boolean processPayment() {
-		return false;
+		return amount > 0 && paymentDate != null && paymentPurpose != null;
 	}
 
 }

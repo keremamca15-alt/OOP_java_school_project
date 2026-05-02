@@ -114,8 +114,30 @@ public class Invoice {
 		this.payments = payments;
 	}
 
+	public void addPayment(Payment payment) {
+		if (payment != null && payment.processPayment()) {
+			payments.add(payment);
+			payment.setInvoice(this);
+		}
+	}
+
+	public double calculatePaidAmount() {
+		double paidAmount = 0.0;
+		for (Payment payment : payments) {
+			if (payment.processPayment()) {
+				paidAmount += payment.getAmount();
+			}
+		}
+		return paidAmount;
+	}
+
+	public double calculateRemainingAmount() {
+		return calculateTotal() - calculatePaidAmount();
+	}
+
 	public double calculateTotal() {
-		return 0.0;
+		totalAmount = baseAmount + damageFee + addonFee + additionalCharges - discountAmount - refundAmount;
+		return totalAmount;
 	}
 
 	/**
@@ -123,10 +145,15 @@ public class Invoice {
 	 * @param customer
 	 */
 	public void applyDiscount(Customer customer) {
+		if (customer == null || customer.getLoyaltyTier() == null) {
+			discountAmount = 0.0;
+			return;
+		}
+		discountAmount = baseAmount * customer.getLoyaltyTier().getDiscountRate();
 	}
 
 	public double calculateRefund() {
-		return 0.0;
+		return refundAmount;
 	}
 
 }

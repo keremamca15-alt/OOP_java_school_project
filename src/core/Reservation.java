@@ -116,9 +116,11 @@ public class Reservation {
 	}
 
 	public void confirmReservation() {
+		status = ReservationStatus.CONFIRMED;
 	}
 
 	public void cancelReservation() {
+		status = ReservationStatus.CANCELLED;
 	}
 
 	public int calculateDuration() {

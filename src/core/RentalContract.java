@@ -146,6 +146,8 @@ public class RentalContract {
 	}
 
 	public void closeContract() {
+		status = ContractStatus.CLOSED;
+		actualReturnDate = new Date();
 	}
 
 }
