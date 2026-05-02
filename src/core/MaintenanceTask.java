@@ -70,9 +70,11 @@ public class MaintenanceTask {
 	}
 
 	public void scheduleMaintenance() {
+		status = MaintenanceStatus.SCHEDULED;
 	}
 
 	public void completeMaintenance() {
+		status = MaintenanceStatus.COMPLETED;
 	}
 
 }

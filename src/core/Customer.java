@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Customer extends User {
 
@@ -55,11 +56,22 @@ public class Customer extends User {
 	}
 
 	public Reservation makeReservation() {
-		return null;
+		return new Reservation();
+	}
+
+	public Reservation makeReservation(int reservationID, Vehicle vehicle, Date startDate, Date endDate) {
+		Reservation reservation = new Reservation(reservationID, startDate, endDate, ReservationStatus.PENDING);
+		reservation.setCustomer(this);
+		reservation.setVehicle(vehicle);
+		reservations.add(reservation);
+		if (vehicle != null) {
+			vehicle.getReservations().add(reservation);
+		}
+		return reservation;
 	}
 
 	public ArrayList<Reservation> viewMyReservations() {
-		return new ArrayList<>();
+		return reservations;
 	}
 
 	/**
@@ -67,6 +79,9 @@ public class Customer extends User {
 	 * @param amount
 	 */
 	public void earnPoints(double amount) {
+		int earnedPoints = (int) (amount / 10);
+		loyaltyPoints += earnedPoints;
+		loyaltyTier = LoyaltyTier.fromPoints(loyaltyPoints);
 	}
 
 }

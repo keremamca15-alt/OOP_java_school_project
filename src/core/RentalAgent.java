@@ -55,6 +55,10 @@ public class RentalAgent extends Employee {
 	 * @param reservation
 	 */
 	public Invoice processReturn(Reservation reservation) {
+		return processReturn(reservation, null);
+	}
+
+	public Invoice processReturn(Reservation reservation, DamageAssessment damageAssessment) {
 		if (reservation == null || reservation.getVehicle() == null || reservation.getRentalContract() == null) {
 			return null;
 		}
@@ -69,8 +73,17 @@ public class RentalAgent extends Employee {
 			addonFee += addon.calculateCost(days);
 		}
 
-		Invoice invoice = new Invoice(rentalContracts.size(), baseAmount, 0.0, addonFee);
+		double damageFee = 0.0;
+		if (damageAssessment != null) {
+			damageFee = damageAssessment.getDamageCost();
+		}
+
+		Invoice invoice = new Invoice(rentalContracts.size(), baseAmount, damageFee, addonFee);
 		invoice.setRentalContract(contract);
+		if (damageAssessment != null) {
+			invoice.setDamageAssessment(damageAssessment);
+			damageAssessment.setInvoice(invoice);
+		}
 		contract.setInvoice(invoice);
 		contract.closeContract();
 		vehicle.setStatus(VehicleStatus.AVAILABLE);
