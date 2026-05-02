@@ -27,6 +27,9 @@ public class BranchReport {
 	}
 
 	public void setReportID(int reportID) {
+		if (reportID < 0) {
+			throw new IllegalArgumentException("Report ID cannot be negative.");
+		}
 		this.reportID = reportID;
 	}
 
@@ -43,6 +46,9 @@ public class BranchReport {
 	}
 
 	public void setTotalVehicles(int totalVehicles) {
+		if (totalVehicles < 0) {
+			throw new IllegalArgumentException("Total vehicles cannot be negative.");
+		}
 		this.totalVehicles = totalVehicles;
 	}
 
@@ -51,6 +57,9 @@ public class BranchReport {
 	}
 
 	public void setTotalReservations(int totalReservations) {
+		if (totalReservations < 0) {
+			throw new IllegalArgumentException("Total reservations cannot be negative.");
+		}
 		this.totalReservations = totalReservations;
 	}
 
@@ -59,6 +68,9 @@ public class BranchReport {
 	}
 
 	public void setAvailableVehicles(int availableVehicles) {
+		if (availableVehicles < 0) {
+			throw new IllegalArgumentException("Available vehicles cannot be negative.");
+		}
 		this.availableVehicles = availableVehicles;
 	}
 
@@ -67,6 +79,9 @@ public class BranchReport {
 	}
 
 	public void setRentedVehicles(int rentedVehicles) {
+		if (rentedVehicles < 0) {
+			throw new IllegalArgumentException("Rented vehicles cannot be negative.");
+		}
 		this.rentedVehicles = rentedVehicles;
 	}
 
@@ -75,6 +90,9 @@ public class BranchReport {
 	}
 
 	public void setTotalRevenue(double totalRevenue) {
+		if (totalRevenue < 0) {
+			throw new IllegalArgumentException("Total revenue cannot be negative.");
+		}
 		this.totalRevenue = totalRevenue;
 	}
 
@@ -84,6 +102,9 @@ public class BranchReport {
 
 	public void setBranch(Branch branch) {
 		this.branch = branch;
+		if (branch != null && !branch.getBranchReports().contains(this)) {
+			branch.getBranchReports().add(this);
+		}
 	}
 
 	public BranchManager getGeneratedBy() {
@@ -92,6 +113,9 @@ public class BranchReport {
 
 	public void setGeneratedBy(BranchManager generatedBy) {
 		this.generatedBy = generatedBy;
+		if (generatedBy != null && !generatedBy.getGeneratedReports().contains(this)) {
+			generatedBy.getGeneratedReports().add(this);
+		}
 	}
 
 }

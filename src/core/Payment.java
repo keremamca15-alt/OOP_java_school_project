@@ -18,11 +18,11 @@ public class Payment {
 	}
 
 	public Payment(int paymentID, double amount, Date paymentDate, PaymentPurpose paymentPurpose, int customerID) {
-		this.paymentID = paymentID;
-		this.amount = amount;
+		setPaymentID(paymentID);
+		setAmount(amount);
 		this.paymentDate = paymentDate;
 		this.paymentPurpose = paymentPurpose;
-		this.customerID = customerID;
+		setCustomerID(customerID);
 	}
 
 	public int getPaymentID() {
@@ -30,6 +30,9 @@ public class Payment {
 	}
 
 	public void setPaymentID(int paymentID) {
+		if (paymentID < 0) {
+			throw new IllegalArgumentException("Payment ID cannot be negative.");
+		}
 		this.paymentID = paymentID;
 	}
 
@@ -38,6 +41,9 @@ public class Payment {
 	}
 
 	public void setAmount(double amount) {
+		if (amount < 0) {
+			throw new IllegalArgumentException("Payment amount cannot be negative.");
+		}
 		this.amount = amount;
 	}
 
@@ -62,6 +68,9 @@ public class Payment {
 	}
 
 	public void setCustomerID(int customerID) {
+		if (customerID < 0) {
+			throw new IllegalArgumentException("Customer ID cannot be negative.");
+		}
 		this.customerID = customerID;
 	}
 

@@ -26,6 +26,9 @@ public class MaintenanceTask {
 	}
 
 	public void setMaintenanceID(int maintenanceID) {
+		if (maintenanceID < 0) {
+			throw new IllegalArgumentException("Maintenance ID cannot be negative.");
+		}
 		this.maintenanceID = maintenanceID;
 	}
 
@@ -59,6 +62,9 @@ public class MaintenanceTask {
 
 	public void setVehicle(Vehicle vehicle) {
 		this.vehicle = vehicle;
+		if (vehicle != null && !vehicle.getMaintenanceTasks().contains(this)) {
+			vehicle.getMaintenanceTasks().add(this);
+		}
 	}
 
 	public Mechanic getMechanic() {
@@ -67,14 +73,24 @@ public class MaintenanceTask {
 
 	public void setMechanic(Mechanic mechanic) {
 		this.mechanic = mechanic;
+		if (mechanic != null && !mechanic.getMaintenanceTasks().contains(this)) {
+			mechanic.getMaintenanceTasks().add(this);
+		}
 	}
 
 	public void scheduleMaintenance() {
 		status = MaintenanceStatus.SCHEDULED;
+		if (vehicle != null) {
+			vehicle.setStatus(VehicleStatus.IN_MAINTENANCE);
+		}
 	}
 
 	public void completeMaintenance() {
 		status = MaintenanceStatus.COMPLETED;
+		if (vehicle != null) {
+			vehicle.setLastMaintenanceMileage(vehicle.getCurrentMileage());
+			vehicle.setStatus(VehicleStatus.AVAILABLE);
+		}
 	}
 
 }

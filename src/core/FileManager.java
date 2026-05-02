@@ -94,8 +94,7 @@ public class FileManager {
 			int branchID = parseInt(filePath, line, parts[7]);
 			Branch branch = findBranchByID(branches, branchID);
 			if (branch != null) {
-				branch.getEmployees().add(employee);
-				employee.setBranch(branch);
+				branch.addEmployee(employee);
 			}
 			employees.add(employee);
 		}
@@ -154,13 +153,11 @@ public class FileManager {
 			Vehicle vehicle = findVehicleByID(vehicles, parseInt(filePath, line, parts[1]));
 			if (vehicle != null) {
 				task.setVehicle(vehicle);
-				vehicle.getMaintenanceTasks().add(task);
 			}
 
 			Mechanic mechanic = findMechanicByID(mechanics, parseInt(filePath, line, parts[2]));
 			if (mechanic != null) {
 				task.setMechanic(mechanic);
-				mechanic.getMaintenanceTasks().add(task);
 			}
 			maintenanceTasks.add(task);
 		}
@@ -249,13 +246,11 @@ public class FileManager {
 			Customer customer = findCustomerByID(customers, parseInt(filePath, line, parts[1]));
 			if (customer != null) {
 				reservation.setCustomer(customer);
-				customer.getReservations().add(reservation);
 			}
 
 			Vehicle vehicle = findVehicleByID(vehicles, parseInt(filePath, line, parts[2]));
 			if (vehicle != null) {
 				reservation.setVehicle(vehicle);
-				vehicle.getReservations().add(reservation);
 			}
 
 			Payment prepayment = findPaymentByID(payments, parseInt(filePath, line, parts[8]));
@@ -306,13 +301,11 @@ public class FileManager {
 			Reservation reservation = findReservationByID(reservations, parseInt(filePath, line, parts[1]));
 			if (reservation != null) {
 				contract.setReservation(reservation);
-				reservation.setRentalContract(contract);
 			}
 
 			RentalAgent rentalAgent = findRentalAgentByID(rentalAgents, parseInt(filePath, line, parts[2]));
 			if (rentalAgent != null) {
 				contract.setRentalAgent(rentalAgent);
-				rentalAgent.getRentalContracts().add(contract);
 			}
 
 			Payment pickupPayment = findPaymentByID(payments, parseInt(filePath, line, parts[11]));
@@ -357,13 +350,11 @@ public class FileManager {
 			Vehicle vehicle = findVehicleByID(vehicles, parseInt(filePath, line, parts[1]));
 			if (vehicle != null) {
 				assessment.setVehicle(vehicle);
-				vehicle.getDamageAssessments().add(assessment);
 			}
 
 			RentalAgent rentalAgent = findRentalAgentByID(rentalAgents, parseInt(filePath, line, parts[2]));
 			if (rentalAgent != null) {
 				assessment.setRentalAgent(rentalAgent);
-				rentalAgent.getDamageAssessments().add(assessment);
 			}
 			assessments.add(assessment);
 		}
@@ -401,13 +392,11 @@ public class FileManager {
 			RentalContract contract = findRentalContractByID(rentalContracts, parseInt(filePath, line, parts[1]));
 			if (contract != null) {
 				invoice.setRentalContract(contract);
-				contract.setInvoice(invoice);
 			}
 
 			DamageAssessment assessment = findDamageAssessmentByID(assessments, parseInt(filePath, line, parts[2]));
 			if (assessment != null) {
 				invoice.setDamageAssessment(assessment);
-				assessment.setInvoice(invoice);
 			}
 
 			for (int paymentID : parseIDList(filePath, line, parts[10])) {
@@ -449,13 +438,11 @@ public class FileManager {
 			Branch branch = findBranchByID(branches, parseInt(filePath, line, parts[1]));
 			if (branch != null) {
 				report.setBranch(branch);
-				branch.getBranchReports().add(report);
 			}
 
 			BranchManager branchManager = findBranchManagerByID(branchManagers, parseInt(filePath, line, parts[2]));
 			if (branchManager != null) {
 				report.setGeneratedBy(branchManager);
-				branchManager.getGeneratedReports().add(report);
 			}
 			branchReports.add(report);
 		}

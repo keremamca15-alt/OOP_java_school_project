@@ -91,9 +91,16 @@ public class Main {
 		Invoice returnInvoice = rentalAgent.processReturn(reservation, assessment);
 
 		MaintenanceTask maintenanceTask = new MaintenanceTask();
+		maintenanceTask.setVehicle(economy);
+		if (!mechanics.isEmpty()) {
+			mechanics.get(0).performMaintenance(maintenanceTask);
+		}
 		maintenanceTask.scheduleMaintenance();
 		MaintenanceStatus scheduledStatus = maintenanceTask.getStatus();
+		VehicleStatus maintenanceVehicleStatusAfterSchedule = economy.getStatus();
 		maintenanceTask.completeMaintenance();
+		VehicleStatus maintenanceVehicleStatusAfterComplete = economy.getStatus();
+		int lastMaintenanceMileageAfterComplete = economy.getLastMaintenanceMileage();
 
 		System.out.println("== Reservation ==");
 		System.out.println("Loaded branches: " + branches.size());
@@ -143,7 +150,10 @@ public class Main {
 		System.out.println("Needs maintenance: " + needsMaintenance);
 		System.out.println("Damage assessment cost: " + assessment.getDamageCost());
 		System.out.println("Maintenance status after schedule: " + scheduledStatus);
+		System.out.println("Maintenance vehicle status after schedule: " + maintenanceVehicleStatusAfterSchedule);
 		System.out.println("Maintenance status after complete: " + maintenanceTask.getStatus());
+		System.out.println("Maintenance vehicle status after complete: " + maintenanceVehicleStatusAfterComplete);
+		System.out.println("Last maintenance mileage after complete: " + lastMaintenanceMileageAfterComplete);
 	}
 
 	private static Invoice createPaidInvoice(Date paymentDate, double addonCost) {

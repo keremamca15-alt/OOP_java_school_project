@@ -32,6 +32,9 @@ public class Reservation {
 	}
 
 	public void setReservationID(int reservationID) {
+		if (reservationID < 0) {
+			throw new IllegalArgumentException("Reservation ID cannot be negative.");
+		}
 		this.reservationID = reservationID;
 	}
 
@@ -64,6 +67,9 @@ public class Reservation {
 	}
 
 	public void setPrePaymentAmount(double prePaymentAmount) {
+		if (prePaymentAmount < 0) {
+			throw new IllegalArgumentException("Prepayment amount cannot be negative.");
+		}
 		this.prePaymentAmount = prePaymentAmount;
 	}
 
@@ -72,6 +78,9 @@ public class Reservation {
 	}
 
 	public void setDepositAmount(double depositAmount) {
+		if (depositAmount < 0) {
+			throw new IllegalArgumentException("Deposit amount cannot be negative.");
+		}
 		this.depositAmount = depositAmount;
 	}
 
@@ -81,6 +90,9 @@ public class Reservation {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+		if (customer != null && !customer.getReservations().contains(this)) {
+			customer.getReservations().add(this);
+		}
 	}
 
 	public Vehicle getVehicle() {
@@ -89,6 +101,9 @@ public class Reservation {
 
 	public void setVehicle(Vehicle vehicle) {
 		this.vehicle = vehicle;
+		if (vehicle != null && !vehicle.getReservations().contains(this)) {
+			vehicle.getReservations().add(this);
+		}
 	}
 
 	public Payment getPrepayment() {
@@ -97,6 +112,9 @@ public class Reservation {
 
 	public void setPrepayment(Payment prepayment) {
 		this.prepayment = prepayment;
+		if (prepayment != null && prepayment.getReservation() != this) {
+			prepayment.setReservation(this);
+		}
 	}
 
 	public RentalContract getRentalContract() {
@@ -105,6 +123,9 @@ public class Reservation {
 
 	public void setRentalContract(RentalContract rentalContract) {
 		this.rentalContract = rentalContract;
+		if (rentalContract != null && rentalContract.getReservation() != this) {
+			rentalContract.setReservation(this);
+		}
 	}
 
 	public ArrayList<Addon> getAddons() {
@@ -112,7 +133,12 @@ public class Reservation {
 	}
 
 	public void setAddons(ArrayList<Addon> addons) {
-		this.addons = addons;
+		this.addons = new ArrayList<>();
+		if (addons != null) {
+			for (Addon addon : addons) {
+				addAddon(addon);
+			}
+		}
 	}
 
 	public void confirmReservation() {
@@ -124,8 +150,11 @@ public class Reservation {
 	}
 
 	public int calculateDuration() {
-		if (startDate == null || endDate == null || !endDate.after(startDate)) {
-			return 0;
+		if (startDate == null || endDate == null) {
+			throw new IllegalStateException("Reservation dates cannot be empty.");
+		}
+		if (!endDate.after(startDate)) {
+			throw new IllegalStateException("Reservation end date must be after start date.");
 		}
 		long difference = endDate.getTime() - startDate.getTime();
 		long dayInMillis = 24L * 60 * 60 * 1000;
@@ -137,7 +166,9 @@ public class Reservation {
 	 * @param addon
 	 */
 	public void addAddon(Addon addon) {
-		addons.add(addon);
+		if (addon != null && !addons.contains(addon)) {
+			addons.add(addon);
+		}
 	}
 
 }

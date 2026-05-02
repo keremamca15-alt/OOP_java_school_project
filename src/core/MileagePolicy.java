@@ -19,6 +19,12 @@ public enum MileagePolicy {
 	 * @param km
 	 */
 	public double calculateExtraCharge(int days, int km) {
+		if (days < 0) {
+			throw new IllegalArgumentException("Days cannot be negative.");
+		}
+		if (km < 0) {
+			throw new IllegalArgumentException("Kilometers cannot be negative.");
+		}
 		if (this == UNLIMITED) {
 			return 0.0;
 		}

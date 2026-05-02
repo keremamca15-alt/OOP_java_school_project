@@ -11,10 +11,10 @@ public class Addon {
 	}
 
 	public Addon(int addonID, String name, String description, double dailyPrice) {
-		this.addonID = addonID;
+		setAddonID(addonID);
 		this.name = name;
 		this.description = description;
-		this.dailyPrice = dailyPrice;
+		setDailyPrice(dailyPrice);
 	}
 
 	public int getAddonID() {
@@ -22,6 +22,9 @@ public class Addon {
 	}
 
 	public void setAddonID(int addonID) {
+		if (addonID < 0) {
+			throw new IllegalArgumentException("Addon ID cannot be negative.");
+		}
 		this.addonID = addonID;
 	}
 
@@ -46,6 +49,9 @@ public class Addon {
 	}
 
 	public void setDailyPrice(double dailyPrice) {
+		if (dailyPrice < 0) {
+			throw new IllegalArgumentException("Daily price cannot be negative.");
+		}
 		this.dailyPrice = dailyPrice;
 	}
 
@@ -54,6 +60,9 @@ public class Addon {
 	 * @param days
 	 */
 	public double calculateCost(int days) {
+		if (days < 0) {
+			throw new IllegalArgumentException("Days cannot be negative.");
+		}
 		return dailyPrice * days;
 	}
 

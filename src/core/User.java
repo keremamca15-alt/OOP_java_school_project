@@ -11,7 +11,7 @@ public abstract class User {
 	}
 
 	public User(int userID, String name, String surname, String email) {
-		this.userID = userID;
+		setUserID(userID);
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
@@ -22,6 +22,9 @@ public abstract class User {
 	}
 
 	public void setUserID(int userID) {
+		if (userID < 0) {
+			throw new IllegalArgumentException("User ID cannot be negative.");
+		}
 		this.userID = userID;
 	}
 

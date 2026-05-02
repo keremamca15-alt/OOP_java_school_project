@@ -14,7 +14,12 @@ public class Mechanic extends Employee {
 	}
 
 	public void setMaintenanceTasks(ArrayList<MaintenanceTask> maintenanceTasks) {
-		this.maintenanceTasks = maintenanceTasks;
+		this.maintenanceTasks = new ArrayList<>();
+		if (maintenanceTasks != null) {
+			for (MaintenanceTask task : maintenanceTasks) {
+				performMaintenance(task);
+			}
+		}
 	}
 
 	public ArrayList<MaintenanceTask> viewMaintenanceQueue() {
@@ -26,7 +31,12 @@ public class Mechanic extends Employee {
 	 * @param record
 	 */
 	public void performMaintenance(MaintenanceTask task) {
-		maintenanceTasks.add(task);
+		if (task != null) {
+			task.setMechanic(this);
+			if (!maintenanceTasks.contains(task)) {
+				maintenanceTasks.add(task);
+			}
+		}
 	}
 
 }

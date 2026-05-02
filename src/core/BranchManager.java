@@ -12,7 +12,7 @@ public class BranchManager extends Employee {
 	}
 
 	public BranchManager(Branch managedBranch) {
-		this.managedBranch = managedBranch;
+		setManagedBranch(managedBranch);
 	}
 
 	public Branch getManagedBranch() {
@@ -21,6 +21,9 @@ public class BranchManager extends Employee {
 
 	public void setManagedBranch(Branch managedBranch) {
 		this.managedBranch = managedBranch;
+		if (managedBranch != null && managedBranch.getBranchManager() != this) {
+			managedBranch.setBranchManager(this);
+		}
 	}
 
 	public ArrayList<BranchReport> getGeneratedReports() {
@@ -28,7 +31,12 @@ public class BranchManager extends Employee {
 	}
 
 	public void setGeneratedReports(ArrayList<BranchReport> generatedReports) {
-		this.generatedReports = generatedReports;
+		this.generatedReports = new ArrayList<>();
+		if (generatedReports != null) {
+			for (BranchReport report : generatedReports) {
+				addGeneratedReport(report);
+			}
+		}
 	}
 
 	/**
@@ -36,10 +44,13 @@ public class BranchManager extends Employee {
 	 * @param employee
 	 */
 	public void addEmployee(Employee employee) {
-		if (managedBranch != null && employee != null) {
-			managedBranch.getEmployees().add(employee);
-			employee.setBranch(managedBranch);
+		if (managedBranch == null) {
+			throw new IllegalStateException("Branch manager does not manage a branch.");
 		}
+		if (employee == null) {
+			throw new IllegalArgumentException("Employee cannot be empty.");
+		}
+		managedBranch.addEmployee(employee);
 	}
 
 	/**
@@ -48,7 +59,7 @@ public class BranchManager extends Employee {
 	 */
 	public void removeEmployee(int employeeID) {
 		if (managedBranch == null) {
-			return;
+			throw new IllegalStateException("Branch manager does not manage a branch.");
 		}
 		for (Employee employee : managedBranch.getEmployees()) {
 			if (employee.getEmployeeID() == employeeID) {
@@ -65,10 +76,10 @@ public class BranchManager extends Employee {
 	 */
 	public BranchReport generateReport(Branch branch) {
 		if (branch == null) {
-			return null;
+			throw new IllegalArgumentException("Report branch cannot be empty.");
 		}
 
-		BranchReport report = new BranchReport(generatedReports.size() + 1, new Date());
+		BranchReport report = new BranchReport(createNextReportID(branch), new Date());
 		report.setBranch(branch);
 		report.setGeneratedBy(this);
 		report.setTotalVehicles(branch.getVehicles().size());
@@ -92,22 +103,47 @@ public class BranchManager extends Employee {
 		report.setTotalReservations(totalReservations);
 		report.setTotalRevenue(calculateTotalRevenue(branch));
 
-		generatedReports.add(report);
-		branch.getBranchReports().add(report);
+		addGeneratedReport(report);
+		branch.addBranchReport(report);
 		return report;
 	}
 
 	private double calculateTotalRevenue(Branch branch) {
 		double totalRevenue = 0.0;
+		ArrayList<Invoice> countedInvoices = new ArrayList<>();
 		for (Vehicle vehicle : branch.getVehicles()) {
 			for (Reservation reservation : vehicle.getReservations()) {
 				RentalContract contract = reservation.getRentalContract();
-				if (contract != null && contract.getInvoice() != null) {
+				if (contract != null && contract.getInvoice() != null
+						&& !countedInvoices.contains(contract.getInvoice())) {
+					countedInvoices.add(contract.getInvoice());
 					totalRevenue += contract.getInvoice().calculatePaidAmount();
 				}
 			}
 		}
 		return totalRevenue;
+	}
+
+	private void addGeneratedReport(BranchReport report) {
+		if (report != null && !generatedReports.contains(report)) {
+			generatedReports.add(report);
+			report.setGeneratedBy(this);
+		}
+	}
+
+	private int createNextReportID(Branch branch) {
+		int maxReportID = 0;
+		for (BranchReport report : generatedReports) {
+			if (report.getReportID() > maxReportID) {
+				maxReportID = report.getReportID();
+			}
+		}
+		for (BranchReport report : branch.getBranchReports()) {
+			if (report.getReportID() > maxReportID) {
+				maxReportID = report.getReportID();
+			}
+		}
+		return maxReportID + 1;
 	}
 
 }

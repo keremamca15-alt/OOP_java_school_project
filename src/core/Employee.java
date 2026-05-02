@@ -20,6 +20,9 @@ public abstract class Employee extends User {
 	}
 
 	public void setEmployeeID(int employeeID) {
+		if (employeeID < 0) {
+			throw new IllegalArgumentException("Employee ID cannot be negative.");
+		}
 		this.employeeID = employeeID;
 	}
 
@@ -28,6 +31,9 @@ public abstract class Employee extends User {
 	}
 
 	public void setSalary(double salary) {
+		if (salary < 0) {
+			throw new IllegalArgumentException("Salary cannot be negative.");
+		}
 		this.salary = salary;
 	}
 
@@ -37,6 +43,9 @@ public abstract class Employee extends User {
 
 	public void setBranch(Branch branch) {
 		this.branch = branch;
+		if (branch != null && !branch.getEmployees().contains(this)) {
+			branch.getEmployees().add(this);
+		}
 	}
 
 }

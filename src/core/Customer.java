@@ -15,7 +15,7 @@ public class Customer extends User {
 
 	public Customer(int userID, String name, String surname, String email, int loyaltyPoints, LoyaltyTier loyaltyTier) {
 		super(userID, name, surname, email);
-		this.loyaltyPoints = loyaltyPoints;
+		setLoyaltyPoints(loyaltyPoints);
 		this.loyaltyTier = loyaltyTier;
 	}
 
@@ -24,6 +24,9 @@ public class Customer extends User {
 	}
 
 	public void setLoyaltyPoints(int loyaltyPoints) {
+		if (loyaltyPoints < 0) {
+			throw new IllegalArgumentException("Loyalty points cannot be negative.");
+		}
 		this.loyaltyPoints = loyaltyPoints;
 	}
 
@@ -40,7 +43,15 @@ public class Customer extends User {
 	}
 
 	public void setReservations(ArrayList<Reservation> reservations) {
-		this.reservations = reservations;
+		this.reservations = new ArrayList<>();
+		if (reservations != null) {
+			for (Reservation reservation : reservations) {
+				if (reservation != null && !this.reservations.contains(reservation)) {
+					this.reservations.add(reservation);
+					reservation.setCustomer(this);
+				}
+			}
+		}
 	}
 
 	public ArrayList<Payment> getPayments() {
@@ -48,7 +59,15 @@ public class Customer extends User {
 	}
 
 	public void setPayments(ArrayList<Payment> payments) {
-		this.payments = payments;
+		this.payments = new ArrayList<>();
+		if (payments != null) {
+			for (Payment payment : payments) {
+				if (payment != null && !this.payments.contains(payment)) {
+					this.payments.add(payment);
+					payment.setCustomer(this);
+				}
+			}
+		}
 	}
 
 	public ArrayList<Vehicle> searchAvailableVehicles() {
@@ -73,8 +92,6 @@ public class Customer extends User {
 		Reservation reservation = new Reservation(reservationID, startDate, endDate, ReservationStatus.PENDING);
 		reservation.setCustomer(this);
 		reservation.setVehicle(vehicle);
-		reservations.add(reservation);
-		vehicle.getReservations().add(reservation);
 		return reservation;
 	}
 
@@ -87,6 +104,9 @@ public class Customer extends User {
 	 * @param amount
 	 */
 	public void earnPoints(double amount) {
+		if (amount < 0) {
+			throw new IllegalArgumentException("Amount cannot be negative.");
+		}
 		int earnedPoints = (int) (amount / 10);
 		loyaltyPoints += earnedPoints;
 		loyaltyTier = LoyaltyTier.fromPoints(loyaltyPoints);

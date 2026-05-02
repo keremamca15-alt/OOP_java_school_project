@@ -16,7 +16,15 @@ public class RentalAgent extends Employee {
 	}
 
 	public void setDamageAssessments(ArrayList<DamageAssessment> damageAssessments) {
-		this.damageAssessments = damageAssessments;
+		this.damageAssessments = new ArrayList<>();
+		if (damageAssessments != null) {
+			for (DamageAssessment assessment : damageAssessments) {
+				if (assessment != null && !this.damageAssessments.contains(assessment)) {
+					this.damageAssessments.add(assessment);
+					assessment.setRentalAgent(this);
+				}
+			}
+		}
 	}
 
 	public ArrayList<RentalContract> getRentalContracts() {
@@ -24,7 +32,15 @@ public class RentalAgent extends Employee {
 	}
 
 	public void setRentalContracts(ArrayList<RentalContract> rentalContracts) {
-		this.rentalContracts = rentalContracts;
+		this.rentalContracts = new ArrayList<>();
+		if (rentalContracts != null) {
+			for (RentalContract contract : rentalContracts) {
+				if (contract != null && !this.rentalContracts.contains(contract)) {
+					this.rentalContracts.add(contract);
+					contract.setRentalAgent(this);
+				}
+			}
+		}
 	}
 
 	/**
@@ -121,7 +137,7 @@ public class RentalAgent extends Employee {
 
 	public DamageAssessment assessDamage(Vehicle vehicle, String description, double damageCost) {
 		if (vehicle == null) {
-			return null;
+			throw new IllegalArgumentException("Damage assessment vehicle cannot be empty.");
 		}
 
 		DamageAssessment assessment = new DamageAssessment(
@@ -131,8 +147,6 @@ public class RentalAgent extends Employee {
 				damageCost);
 		assessment.setVehicle(vehicle);
 		assessment.setRentalAgent(this);
-		damageAssessments.add(assessment);
-		vehicle.getDamageAssessments().add(assessment);
 		return assessment;
 	}
 

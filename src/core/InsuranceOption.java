@@ -18,6 +18,9 @@ public enum InsuranceOption {
 	 * @param days
 	 */
 	public double calculateCost(int days) {
+		if (days < 0) {
+			throw new IllegalArgumentException("Days cannot be negative.");
+		}
 		return dailyFee * days;
 	}
 

@@ -39,6 +39,9 @@ public abstract class Vehicle {
 	}
 
 	public void setVehicleID(int vehicleID) {
+		if (vehicleID < 0) {
+			throw new IllegalArgumentException("Vehicle ID cannot be negative.");
+		}
 		this.vehicleID = vehicleID;
 	}
 
@@ -71,6 +74,9 @@ public abstract class Vehicle {
 	}
 
 	public void setYear(int year) {
+		if (year < 0) {
+			throw new IllegalArgumentException("Vehicle year cannot be negative.");
+		}
 		this.year = year;
 	}
 
@@ -79,6 +85,9 @@ public abstract class Vehicle {
 	}
 
 	public void setDailyRate(double dailyRate) {
+		if (dailyRate < 0) {
+			throw new IllegalArgumentException("Daily rate cannot be negative.");
+		}
 		this.dailyRate = dailyRate;
 	}
 
@@ -111,6 +120,9 @@ public abstract class Vehicle {
 	}
 
 	public void setCurrentMileage(int currentMileage) {
+		if (currentMileage < 0) {
+			throw new IllegalArgumentException("Current mileage cannot be negative.");
+		}
 		this.currentMileage = currentMileage;
 	}
 
@@ -119,6 +131,9 @@ public abstract class Vehicle {
 	}
 
 	public void setMaintenanceInterval(int maintenanceInterval) {
+		if (maintenanceInterval < 0) {
+			throw new IllegalArgumentException("Maintenance interval cannot be negative.");
+		}
 		this.maintenanceInterval = maintenanceInterval;
 	}
 
@@ -127,6 +142,9 @@ public abstract class Vehicle {
 	}
 
 	public void setLastMaintenanceMileage(int lastMaintenanceMileage) {
+		if (lastMaintenanceMileage < 0) {
+			throw new IllegalArgumentException("Last maintenance mileage cannot be negative.");
+		}
 		this.lastMaintenanceMileage = lastMaintenanceMileage;
 	}
 
@@ -136,6 +154,9 @@ public abstract class Vehicle {
 
 	public void setBranch(Branch branch) {
 		this.branch = branch;
+		if (branch != null && !branch.getVehicles().contains(this)) {
+			branch.getVehicles().add(this);
+		}
 	}
 
 	public ArrayList<Reservation> getReservations() {
@@ -143,7 +164,15 @@ public abstract class Vehicle {
 	}
 
 	public void setReservations(ArrayList<Reservation> reservations) {
-		this.reservations = reservations;
+		this.reservations = new ArrayList<>();
+		if (reservations != null) {
+			for (Reservation reservation : reservations) {
+				if (reservation != null && !this.reservations.contains(reservation)) {
+					this.reservations.add(reservation);
+					reservation.setVehicle(this);
+				}
+			}
+		}
 	}
 
 	public ArrayList<MaintenanceTask> getMaintenanceTasks() {
@@ -151,7 +180,15 @@ public abstract class Vehicle {
 	}
 
 	public void setMaintenanceTasks(ArrayList<MaintenanceTask> maintenanceTasks) {
-		this.maintenanceTasks = maintenanceTasks;
+		this.maintenanceTasks = new ArrayList<>();
+		if (maintenanceTasks != null) {
+			for (MaintenanceTask task : maintenanceTasks) {
+				if (task != null && !this.maintenanceTasks.contains(task)) {
+					this.maintenanceTasks.add(task);
+					task.setVehicle(this);
+				}
+			}
+		}
 	}
 
 	public ArrayList<DamageAssessment> getDamageAssessments() {
@@ -159,7 +196,15 @@ public abstract class Vehicle {
 	}
 
 	public void setDamageAssessments(ArrayList<DamageAssessment> damageAssessments) {
-		this.damageAssessments = damageAssessments;
+		this.damageAssessments = new ArrayList<>();
+		if (damageAssessments != null) {
+			for (DamageAssessment assessment : damageAssessments) {
+				if (assessment != null && !this.damageAssessments.contains(assessment)) {
+					this.damageAssessments.add(assessment);
+					assessment.setVehicle(this);
+				}
+			}
+		}
 	}
 
 	/**
@@ -167,6 +212,9 @@ public abstract class Vehicle {
 	 * @param days
 	 */
 	public double calculateRentalCost(int days) {
+		if (days < 0) {
+			throw new IllegalArgumentException("Days cannot be negative.");
+		}
 		double insuranceCost = 0.0;
 		if (insuranceOption != null) {
 			insuranceCost = insuranceOption.calculateCost(days);
@@ -180,7 +228,13 @@ public abstract class Vehicle {
 	 * @param endDate
 	 */
 	public boolean isAvailable(Date startDate, Date endDate) {
-		if (status != VehicleStatus.AVAILABLE || startDate == null || endDate == null) {
+		if (startDate == null || endDate == null) {
+			throw new IllegalArgumentException("Availability dates cannot be empty.");
+		}
+		if (!endDate.after(startDate)) {
+			throw new IllegalArgumentException("Availability end date must be after start date.");
+		}
+		if (status != VehicleStatus.AVAILABLE) {
 			return false;
 		}
 
@@ -198,7 +252,10 @@ public abstract class Vehicle {
 
 	private boolean datesOverlap(Date startDate, Date endDate, Date reservedStartDate, Date reservedEndDate) {
 		if (reservedStartDate == null || reservedEndDate == null) {
-			return false;
+			throw new IllegalStateException("Reservation dates cannot be empty.");
+		}
+		if (!reservedEndDate.after(reservedStartDate)) {
+			throw new IllegalStateException("Reservation end date must be after start date.");
 		}
 		return startDate.before(reservedEndDate) && endDate.after(reservedStartDate);
 	}

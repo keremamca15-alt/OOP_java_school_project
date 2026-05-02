@@ -27,6 +27,9 @@ public class DamageAssessment {
 	}
 
 	public void setAssessmentID(int assessmentID) {
+		if (assessmentID < 0) {
+			throw new IllegalArgumentException("Assessment ID cannot be negative.");
+		}
 		this.assessmentID = assessmentID;
 	}
 
@@ -51,6 +54,9 @@ public class DamageAssessment {
 	}
 
 	public void setDamageCost(double damageCost) {
+		if (damageCost < 0) {
+			throw new IllegalArgumentException("Damage cost cannot be negative.");
+		}
 		this.damageCost = damageCost;
 	}
 
@@ -60,6 +66,9 @@ public class DamageAssessment {
 
 	public void setVehicle(Vehicle vehicle) {
 		this.vehicle = vehicle;
+		if (vehicle != null && !vehicle.getDamageAssessments().contains(this)) {
+			vehicle.getDamageAssessments().add(this);
+		}
 	}
 
 	public RentalAgent getRentalAgent() {
@@ -68,6 +77,9 @@ public class DamageAssessment {
 
 	public void setRentalAgent(RentalAgent rentalAgent) {
 		this.rentalAgent = rentalAgent;
+		if (rentalAgent != null && !rentalAgent.getDamageAssessments().contains(this)) {
+			rentalAgent.getDamageAssessments().add(this);
+		}
 	}
 
 	public Invoice getInvoice() {
@@ -76,6 +88,9 @@ public class DamageAssessment {
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
+		if (invoice != null && invoice.getDamageAssessment() != this) {
+			invoice.setDamageAssessment(this);
+		}
 	}
 
 }

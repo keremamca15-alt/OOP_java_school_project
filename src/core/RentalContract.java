@@ -34,6 +34,9 @@ public class RentalContract {
 	}
 
 	public void setContractID(int contractID) {
+		if (contractID < 0) {
+			throw new IllegalArgumentException("Contract ID cannot be negative.");
+		}
 		this.contractID = contractID;
 	}
 
@@ -66,9 +69,10 @@ public class RentalContract {
 	}
 
 	public void setDepositAmount(double depositAmount) {
-		if (depositAmount >= 0) {
-			this.depositAmount = depositAmount;
+		if (depositAmount < 0) {
+			throw new IllegalArgumentException("Deposit amount cannot be negative.");
 		}
+		this.depositAmount = depositAmount;
 	}
 
 	public int getInitialMileage() {
@@ -76,9 +80,10 @@ public class RentalContract {
 	}
 
 	public void setInitialMileage(int initialMileage) {
-		if (initialMileage >= 0) {
-			this.initialMileage = initialMileage;
+		if (initialMileage < 0) {
+			throw new IllegalArgumentException("Initial mileage cannot be negative.");
 		}
+		this.initialMileage = initialMileage;
 	}
 
 	public int getFinalMileage() {
@@ -86,9 +91,10 @@ public class RentalContract {
 	}
 
 	public void setFinalMileage(int finalMileage) {
-		if (finalMileage >= 0) {
-			this.finalMileage = finalMileage;
+		if (finalMileage < 0) {
+			throw new IllegalArgumentException("Final mileage cannot be negative.");
 		}
+		this.finalMileage = finalMileage;
 	}
 
 	public ContractStatus getStatus() {

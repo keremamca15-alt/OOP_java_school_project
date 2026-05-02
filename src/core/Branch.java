@@ -27,6 +27,9 @@ public class Branch {
 	}
 
 	public void setBranchID(int branchID) {
+		if (branchID < 0) {
+			throw new IllegalArgumentException("Branch ID cannot be negative.");
+		}
 		this.branchID = branchID;
 	}
 
@@ -51,7 +54,12 @@ public class Branch {
 	}
 
 	public void setEmployees(ArrayList<Employee> employees) {
-		this.employees = employees;
+		this.employees = new ArrayList<>();
+		if (employees != null) {
+			for (Employee employee : employees) {
+				addEmployee(employee);
+			}
+		}
 	}
 
 	public ArrayList<Vehicle> getVehicles() {
@@ -59,7 +67,12 @@ public class Branch {
 	}
 
 	public void setVehicles(ArrayList<Vehicle> vehicles) {
-		this.vehicles = vehicles;
+		this.vehicles = new ArrayList<>();
+		if (vehicles != null) {
+			for (Vehicle vehicle : vehicles) {
+				addVehicle(vehicle);
+			}
+		}
 	}
 
 	public BranchManager getBranchManager() {
@@ -68,6 +81,9 @@ public class Branch {
 
 	public void setBranchManager(BranchManager branchManager) {
 		this.branchManager = branchManager;
+		if (branchManager != null && branchManager.getManagedBranch() != this) {
+			branchManager.setManagedBranch(this);
+		}
 	}
 
 	public ArrayList<BranchReport> getBranchReports() {
@@ -75,7 +91,19 @@ public class Branch {
 	}
 
 	public void setBranchReports(ArrayList<BranchReport> branchReports) {
-		this.branchReports = branchReports;
+		this.branchReports = new ArrayList<>();
+		if (branchReports != null) {
+			for (BranchReport report : branchReports) {
+				addBranchReport(report);
+			}
+		}
+	}
+
+	public void addEmployee(Employee employee) {
+		if (employee != null && !employees.contains(employee)) {
+			employees.add(employee);
+			employee.setBranch(this);
+		}
 	}
 
 	/**
@@ -83,8 +111,10 @@ public class Branch {
 	 * @param vehicle
 	 */
 	public void addVehicle(Vehicle vehicle) {
-		vehicles.add(vehicle);
-		vehicle.setBranch(this);
+		if (vehicle != null && !vehicles.contains(vehicle)) {
+			vehicles.add(vehicle);
+			vehicle.setBranch(this);
+		}
 	}
 
 	/**
@@ -92,7 +122,20 @@ public class Branch {
 	 * @param vehicleID
 	 */
 	public void removeVehicle(int vehicleID) {
+		for (Vehicle vehicle : vehicles) {
+			if (vehicle.getVehicleID() == vehicleID) {
+				vehicle.setBranch(null);
+				break;
+			}
+		}
 		vehicles.removeIf(vehicle -> vehicle.getVehicleID() == vehicleID);
+	}
+
+	public void addBranchReport(BranchReport report) {
+		if (report != null && !branchReports.contains(report)) {
+			branchReports.add(report);
+			report.setBranch(this);
+		}
 	}
 
 	/**
