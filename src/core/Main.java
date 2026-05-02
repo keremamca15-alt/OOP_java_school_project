@@ -16,10 +16,32 @@ public class Main {
 		FileManager fileManager = new FileManager();
 		ArrayList<Branch> branches = fileManager.loadBranches();
 		ArrayList<Customer> customers = fileManager.loadCustomers();
+		ArrayList<Employee> employees = fileManager.loadEmployees(branches);
 		ArrayList<Vehicle> vehicles = fileManager.loadVehicles(branches);
+		ArrayList<Mechanic> mechanics = getMechanics(employees);
+		ArrayList<BranchManager> branchManagers = getBranchManagers(employees);
+		ArrayList<MaintenanceTask> maintenanceTasks = fileManager.loadMaintenanceTasks(vehicles, mechanics);
+		ArrayList<Addon> addons = fileManager.loadAddons();
+		ArrayList<Payment> payments = fileManager.loadPayments(customers);
+		ArrayList<Reservation> reservations = fileManager.loadReservations(customers, vehicles, payments, addons);
+		ArrayList<RentalAgent> rentalAgents = getRentalAgents(employees);
+		ArrayList<RentalContract> rentalContracts = fileManager.loadRentalContracts(
+				reservations, rentalAgents, payments, addons);
+		ArrayList<DamageAssessment> damageAssessments = fileManager.loadDamageAssessments(vehicles, rentalAgents);
+		ArrayList<Invoice> invoices = fileManager.loadInvoices(rentalContracts, damageAssessments, payments);
+		ArrayList<BranchReport> branchReports = fileManager.loadBranchReports(branches, branchManagers);
 		fileManager.saveBranches(branches);
 		fileManager.saveCustomers(customers);
+		fileManager.saveEmployees(employees);
 		fileManager.saveVehicles(vehicles);
+		fileManager.saveMaintenanceTasks(maintenanceTasks);
+		fileManager.saveAddons(addons);
+		fileManager.savePayments(payments);
+		fileManager.saveReservations(reservations);
+		fileManager.saveRentalContracts(rentalContracts);
+		fileManager.saveDamageAssessments(damageAssessments);
+		fileManager.saveInvoices(invoices);
+		fileManager.saveBranchReports(branchReports);
 
 		Branch branch = branches.get(0);
 		Customer customer = customers.get(0);
@@ -53,10 +75,10 @@ public class Main {
 
 		BranchManager branchManager = new BranchManager(branch);
 		Employee employee = new RentalAgent();
-		employee.setEmployeeID(10);
+		employee.setEmployeeID(40);
 		branchManager.addEmployee(employee);
 		int employeeCountAfterAdd = branch.getEmployees().size();
-		branchManager.removeEmployee(10);
+		branchManager.removeEmployee(40);
 		int employeeCountAfterRemove = branch.getEmployees().size();
 		branchManager.addEmployee(employee);
 		BranchReport report = branchManager.generateReport(branch);
@@ -74,7 +96,16 @@ public class Main {
 		System.out.println("== Reservation ==");
 		System.out.println("Loaded branches: " + branches.size());
 		System.out.println("Loaded customers: " + customers.size());
+		System.out.println("Loaded employees: " + employees.size());
 		System.out.println("Loaded vehicles: " + vehicles.size());
+		System.out.println("Loaded maintenance tasks: " + maintenanceTasks.size());
+		System.out.println("Loaded addons: " + addons.size());
+		System.out.println("Loaded payments: " + payments.size());
+		System.out.println("Loaded reservations: " + reservations.size());
+		System.out.println("Loaded rental contracts: " + rentalContracts.size());
+		System.out.println("Loaded damage assessments: " + damageAssessments.size());
+		System.out.println("Loaded invoices: " + invoices.size());
+		System.out.println("Loaded branch reports: " + branchReports.size());
 		System.out.println("Saved demo data to data/");
 		System.out.println("Reservation days: " + days);
 		reservation.cancelReservation();
@@ -119,6 +150,36 @@ public class Main {
 		invoice.calculateTotal();
 		invoice.addPayment(new Payment(3, 200.0, paymentDate, PaymentPurpose.ADDITIONAL_CHARGE, 1));
 		return invoice;
+	}
+
+	private static ArrayList<RentalAgent> getRentalAgents(ArrayList<Employee> employees) {
+		ArrayList<RentalAgent> rentalAgents = new ArrayList<>();
+		for (Employee employee : employees) {
+			if (employee instanceof RentalAgent) {
+				rentalAgents.add((RentalAgent) employee);
+			}
+		}
+		return rentalAgents;
+	}
+
+	private static ArrayList<Mechanic> getMechanics(ArrayList<Employee> employees) {
+		ArrayList<Mechanic> mechanics = new ArrayList<>();
+		for (Employee employee : employees) {
+			if (employee instanceof Mechanic) {
+				mechanics.add((Mechanic) employee);
+			}
+		}
+		return mechanics;
+	}
+
+	private static ArrayList<BranchManager> getBranchManagers(ArrayList<Employee> employees) {
+		ArrayList<BranchManager> branchManagers = new ArrayList<>();
+		for (Employee employee : employees) {
+			if (employee instanceof BranchManager) {
+				branchManagers.add((BranchManager) employee);
+			}
+		}
+		return branchManagers;
 	}
 
 	private static Date createDate(int year, int month, int day) {
