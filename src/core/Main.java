@@ -2,22 +2,29 @@ package core;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ArrayList;
+import java.io.FileNotFoundException;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, InvalidFileFormatException {
 		Date startDate = createDate(2026, Calendar.MAY, 1);
 		Date endDate = createDate(2026, Calendar.MAY, 5);
 		Date searchStartDate = createDate(2026, Calendar.MAY, 2);
 		Date searchEndDate = createDate(2026, Calendar.MAY, 4);
 
-		Branch branch = new Branch(1, "Bornova Branch", "Bornova, Izmir");
-		Vehicle suv = new SUV(101, "35ABC123", "Toyota", "RAV4", 2024, 80.0);
-		Vehicle economy = new Economy(102, "35XYZ987", "Renault", "Clio", 2023, 45.0);
-		prepareVehicle(suv);
-		economy.setStatus(VehicleStatus.AVAILABLE);
-		branch.addVehicle(suv);
-		branch.addVehicle(economy);
+		FileManager fileManager = new FileManager();
+		ArrayList<Branch> branches = fileManager.loadBranches();
+		ArrayList<Customer> customers = fileManager.loadCustomers();
+		ArrayList<Vehicle> vehicles = fileManager.loadVehicles(branches);
+		fileManager.saveBranches(branches);
+		fileManager.saveCustomers(customers);
+		fileManager.saveVehicles(vehicles);
+
+		Branch branch = branches.get(0);
+		Customer customer = customers.get(0);
+		Vehicle suv = vehicles.get(1);
+		Vehicle economy = vehicles.get(0);
 
 		Reservation reservation = new Reservation(1, startDate, endDate, ReservationStatus.CONFIRMED);
 		reservation.setVehicle(suv);
@@ -38,7 +45,6 @@ public class Main {
 		int usedMileage = contract.calculateUsedMileage();
 		double extraKmCharge = suv.getMileagePolicy().calculateExtraCharge(days, usedMileage);
 
-		Customer customer = new Customer(1, "Ayse", "Demir", "ayse@example.com", 800, LoyaltyTier.fromPoints(800));
 		Reservation customerReservation = customer.makeReservation(2, economy, searchStartDate, searchEndDate);
 		customer.earnPoints(500.0);
 
@@ -66,6 +72,10 @@ public class Main {
 		maintenanceTask.completeMaintenance();
 
 		System.out.println("== Reservation ==");
+		System.out.println("Loaded branches: " + branches.size());
+		System.out.println("Loaded customers: " + customers.size());
+		System.out.println("Loaded vehicles: " + vehicles.size());
+		System.out.println("Saved demo data to data/");
 		System.out.println("Reservation days: " + days);
 		reservation.cancelReservation();
 		System.out.println("Reservation status after cancel: " + reservation.getStatus());
@@ -100,15 +110,6 @@ public class Main {
 		System.out.println("Damage assessment cost: " + assessment.getDamageCost());
 		System.out.println("Maintenance status after schedule: " + scheduledStatus);
 		System.out.println("Maintenance status after complete: " + maintenanceTask.getStatus());
-	}
-
-	private static void prepareVehicle(Vehicle vehicle) {
-		vehicle.setInsuranceOption(InsuranceOption.STANDARD);
-		vehicle.setMileagePolicy(MileagePolicy.STANDARD);
-		vehicle.setStatus(VehicleStatus.AVAILABLE);
-		vehicle.setCurrentMileage(14500);
-		vehicle.setLastMaintenanceMileage(10000);
-		vehicle.setMaintenanceInterval(5000);
 	}
 
 	private static Invoice createPaidInvoice(Date paymentDate, double addonCost) {
