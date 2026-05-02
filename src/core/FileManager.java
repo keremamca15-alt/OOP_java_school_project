@@ -68,7 +68,7 @@ public class FileManager {
 			String surname = parts[2];
 			String email = parts[3];
 			int loyaltyPoints = parseInt(filePath, line, parts[4]);
-			LoyaltyTier loyaltyTier = LoyaltyTier.valueOf(parts[5]);
+			LoyaltyTier loyaltyTier = parseEnum(filePath, line, LoyaltyTier.class, parts[5]);
 			customers.add(new Customer(userID, name, surname, email, loyaltyPoints, loyaltyTier));
 		}
 		scanner.close();
@@ -93,9 +93,8 @@ public class FileManager {
 			Employee employee = createEmployee(filePath, line, parts, branches);
 			int branchID = parseInt(filePath, line, parts[7]);
 			Branch branch = findBranchByID(branches, branchID);
-			if (branch != null) {
-				branch.addEmployee(employee);
-			}
+			validateFound(filePath, line, "Branch", branchID, branch);
+			branch.addEmployee(employee);
 			employees.add(employee);
 		}
 		scanner.close();
@@ -120,9 +119,8 @@ public class FileManager {
 			Vehicle vehicle = createVehicle(filePath, line, parts);
 			int branchID = parseInt(filePath, line, parts[13]);
 			Branch branch = findBranchByID(branches, branchID);
-			if (branch != null) {
-				branch.addVehicle(vehicle);
-			}
+			validateFound(filePath, line, "Branch", branchID, branch);
+			branch.addVehicle(vehicle);
 			vehicles.add(vehicle);
 		}
 		scanner.close();
@@ -148,15 +146,17 @@ public class FileManager {
 					parseInt(filePath, line, parts[0]),
 					parseDate(filePath, line, parts[3]),
 					parts[4],
-					MaintenanceStatus.valueOf(parts[5]));
+					parseEnum(filePath, line, MaintenanceStatus.class, parts[5]));
 
-			Vehicle vehicle = findVehicleByID(vehicles, parseInt(filePath, line, parts[1]));
-			if (vehicle != null) {
-				task.setVehicle(vehicle);
-			}
+			int vehicleID = parseInt(filePath, line, parts[1]);
+			Vehicle vehicle = findVehicleByID(vehicles, vehicleID);
+			validateFound(filePath, line, "Vehicle", vehicleID, vehicle);
+			task.setVehicle(vehicle);
 
-			Mechanic mechanic = findMechanicByID(mechanics, parseInt(filePath, line, parts[2]));
-			if (mechanic != null) {
+			int mechanicID = parseInt(filePath, line, parts[2]);
+			Mechanic mechanic = findMechanicByID(mechanics, mechanicID);
+			if (mechanicID != 0) {
+				validateFound(filePath, line, "Mechanic", mechanicID, mechanic);
 				task.setMechanic(mechanic);
 			}
 			maintenanceTasks.add(task);
@@ -207,12 +207,11 @@ public class FileManager {
 					parseInt(filePath, line, parts[0]),
 					parseDouble(filePath, line, parts[1]),
 					parseDate(filePath, line, parts[2]),
-					PaymentPurpose.valueOf(parts[3]),
+					parseEnum(filePath, line, PaymentPurpose.class, parts[3]),
 					parseInt(filePath, line, parts[4]));
 			Customer customer = findCustomerByID(customers, payment.getCustomerID());
-			if (customer != null) {
-				payment.setCustomer(customer);
-			}
+			validateFound(filePath, line, "Customer", payment.getCustomerID(), customer);
+			payment.setCustomer(customer);
 			payments.add(payment);
 		}
 		scanner.close();
@@ -239,31 +238,32 @@ public class FileManager {
 					parseInt(filePath, line, parts[0]),
 					parseDate(filePath, line, parts[3]),
 					parseDate(filePath, line, parts[4]),
-					ReservationStatus.valueOf(parts[5]));
+					parseEnum(filePath, line, ReservationStatus.class, parts[5]));
 			reservation.setPrePaymentAmount(parseDouble(filePath, line, parts[6]));
 			reservation.setDepositAmount(parseDouble(filePath, line, parts[7]));
 
-			Customer customer = findCustomerByID(customers, parseInt(filePath, line, parts[1]));
-			if (customer != null) {
-				reservation.setCustomer(customer);
-			}
+			int customerID = parseInt(filePath, line, parts[1]);
+			Customer customer = findCustomerByID(customers, customerID);
+			validateFound(filePath, line, "Customer", customerID, customer);
+			reservation.setCustomer(customer);
 
-			Vehicle vehicle = findVehicleByID(vehicles, parseInt(filePath, line, parts[2]));
-			if (vehicle != null) {
-				reservation.setVehicle(vehicle);
-			}
+			int vehicleID = parseInt(filePath, line, parts[2]);
+			Vehicle vehicle = findVehicleByID(vehicles, vehicleID);
+			validateFound(filePath, line, "Vehicle", vehicleID, vehicle);
+			reservation.setVehicle(vehicle);
 
-			Payment prepayment = findPaymentByID(payments, parseInt(filePath, line, parts[8]));
-			if (prepayment != null) {
+			int prepaymentID = parseInt(filePath, line, parts[8]);
+			Payment prepayment = findPaymentByID(payments, prepaymentID);
+			if (prepaymentID != 0) {
+				validateFound(filePath, line, "Prepayment", prepaymentID, prepayment);
 				reservation.setPrepayment(prepayment);
 				prepayment.setReservation(reservation);
 			}
 
 			for (int addonID : parseIDList(filePath, line, parts[10])) {
 				Addon addon = findAddonByID(addons, addonID);
-				if (addon != null) {
-					reservation.addAddon(addon);
-				}
+				validateFound(filePath, line, "Addon", addonID, addon);
+				reservation.addAddon(addon);
 			}
 			reservations.add(reservation);
 		}
@@ -292,33 +292,34 @@ public class FileManager {
 					parseInt(filePath, line, parts[0]),
 					parseDate(filePath, line, parts[3]),
 					parseDate(filePath, line, parts[4]),
-					ContractStatus.valueOf(parts[9]));
+					parseEnum(filePath, line, ContractStatus.class, parts[9]));
 			contract.setActualReturnDate(parseOptionalDate(filePath, line, parts[5]));
 			contract.setDepositAmount(parseDouble(filePath, line, parts[6]));
 			contract.setInitialMileage(parseInt(filePath, line, parts[7]));
 			contract.setFinalMileage(parseInt(filePath, line, parts[8]));
 
-			Reservation reservation = findReservationByID(reservations, parseInt(filePath, line, parts[1]));
-			if (reservation != null) {
-				contract.setReservation(reservation);
-			}
+			int reservationID = parseInt(filePath, line, parts[1]);
+			Reservation reservation = findReservationByID(reservations, reservationID);
+			validateFound(filePath, line, "Reservation", reservationID, reservation);
+			contract.setReservation(reservation);
 
-			RentalAgent rentalAgent = findRentalAgentByID(rentalAgents, parseInt(filePath, line, parts[2]));
-			if (rentalAgent != null) {
-				contract.setRentalAgent(rentalAgent);
-			}
+			int rentalAgentID = parseInt(filePath, line, parts[2]);
+			RentalAgent rentalAgent = findRentalAgentByID(rentalAgents, rentalAgentID);
+			validateFound(filePath, line, "Rental agent", rentalAgentID, rentalAgent);
+			contract.setRentalAgent(rentalAgent);
 
-			Payment pickupPayment = findPaymentByID(payments, parseInt(filePath, line, parts[11]));
-			if (pickupPayment != null) {
+			int pickupPaymentID = parseInt(filePath, line, parts[11]);
+			Payment pickupPayment = findPaymentByID(payments, pickupPaymentID);
+			if (pickupPaymentID != 0) {
+				validateFound(filePath, line, "Pickup payment", pickupPaymentID, pickupPayment);
 				contract.setPickupPayment(pickupPayment);
 				pickupPayment.setRentalContract(contract);
 			}
 
 			for (int addonID : parseIDList(filePath, line, parts[12])) {
 				Addon addon = findAddonByID(addons, addonID);
-				if (addon != null) {
-					contract.addAddon(addon);
-				}
+				validateFound(filePath, line, "Addon", addonID, addon);
+				contract.addAddon(addon);
 			}
 			rentalContracts.add(contract);
 		}
@@ -347,15 +348,15 @@ public class FileManager {
 					parts[5],
 					parseDouble(filePath, line, parts[6]));
 
-			Vehicle vehicle = findVehicleByID(vehicles, parseInt(filePath, line, parts[1]));
-			if (vehicle != null) {
-				assessment.setVehicle(vehicle);
-			}
+			int vehicleID = parseInt(filePath, line, parts[1]);
+			Vehicle vehicle = findVehicleByID(vehicles, vehicleID);
+			validateFound(filePath, line, "Vehicle", vehicleID, vehicle);
+			assessment.setVehicle(vehicle);
 
-			RentalAgent rentalAgent = findRentalAgentByID(rentalAgents, parseInt(filePath, line, parts[2]));
-			if (rentalAgent != null) {
-				assessment.setRentalAgent(rentalAgent);
-			}
+			int rentalAgentID = parseInt(filePath, line, parts[2]);
+			RentalAgent rentalAgent = findRentalAgentByID(rentalAgents, rentalAgentID);
+			validateFound(filePath, line, "Rental agent", rentalAgentID, rentalAgent);
+			assessment.setRentalAgent(rentalAgent);
 			assessments.add(assessment);
 		}
 		scanner.close();
@@ -389,21 +390,22 @@ public class FileManager {
 			invoice.setRefundAmount(parseDouble(filePath, line, parts[8]));
 			invoice.setAdditionalCharges(parseDouble(filePath, line, parts[9]));
 
-			RentalContract contract = findRentalContractByID(rentalContracts, parseInt(filePath, line, parts[1]));
-			if (contract != null) {
-				invoice.setRentalContract(contract);
-			}
+			int contractID = parseInt(filePath, line, parts[1]);
+			RentalContract contract = findRentalContractByID(rentalContracts, contractID);
+			validateFound(filePath, line, "Rental contract", contractID, contract);
+			invoice.setRentalContract(contract);
 
-			DamageAssessment assessment = findDamageAssessmentByID(assessments, parseInt(filePath, line, parts[2]));
-			if (assessment != null) {
+			int assessmentID = parseInt(filePath, line, parts[2]);
+			DamageAssessment assessment = findDamageAssessmentByID(assessments, assessmentID);
+			if (assessmentID != 0) {
+				validateFound(filePath, line, "Damage assessment", assessmentID, assessment);
 				invoice.setDamageAssessment(assessment);
 			}
 
 			for (int paymentID : parseIDList(filePath, line, parts[10])) {
 				Payment payment = findPaymentByID(payments, paymentID);
-				if (payment != null) {
-					invoice.addPayment(payment);
-				}
+				validateFound(filePath, line, "Payment", paymentID, payment);
+				invoice.addPayment(payment);
 			}
 			invoices.add(invoice);
 		}
@@ -435,15 +437,15 @@ public class FileManager {
 			report.setRentedVehicles(parseInt(filePath, line, parts[7]));
 			report.setTotalRevenue(parseDouble(filePath, line, parts[8]));
 
-			Branch branch = findBranchByID(branches, parseInt(filePath, line, parts[1]));
-			if (branch != null) {
-				report.setBranch(branch);
-			}
+			int branchID = parseInt(filePath, line, parts[1]);
+			Branch branch = findBranchByID(branches, branchID);
+			validateFound(filePath, line, "Branch", branchID, branch);
+			report.setBranch(branch);
 
-			BranchManager branchManager = findBranchManagerByID(branchManagers, parseInt(filePath, line, parts[2]));
-			if (branchManager != null) {
-				report.setGeneratedBy(branchManager);
-			}
+			int branchManagerID = parseInt(filePath, line, parts[2]);
+			BranchManager branchManager = findBranchManagerByID(branchManagers, branchManagerID);
+			validateFound(filePath, line, "Branch manager", branchManagerID, branchManager);
+			report.setGeneratedBy(branchManager);
 			branchReports.add(report);
 		}
 		scanner.close();
@@ -652,13 +654,15 @@ public class FileManager {
 			vehicle = new Van(vehicleID, plateNumber, brand, model, year, dailyRate);
 		} else if (type.equals("LUXURY")) {
 			vehicle = new Luxury(vehicleID, plateNumber, brand, model, year, dailyRate);
-		} else {
+		} else if (type.equals("ECONOMY")) {
 			vehicle = new Economy(vehicleID, plateNumber, brand, model, year, dailyRate);
+		} else {
+			throw new InvalidFileFormatException("Invalid vehicle type in " + filePath + " line: " + line);
 		}
 
-		vehicle.setInsuranceOption(InsuranceOption.valueOf(parts[7]));
-		vehicle.setMileagePolicy(MileagePolicy.valueOf(parts[8]));
-		vehicle.setStatus(VehicleStatus.valueOf(parts[9]));
+		vehicle.setInsuranceOption(parseEnum(filePath, line, InsuranceOption.class, parts[7]));
+		vehicle.setMileagePolicy(parseEnum(filePath, line, MileagePolicy.class, parts[8]));
+		vehicle.setStatus(parseEnum(filePath, line, VehicleStatus.class, parts[9]));
 		vehicle.setCurrentMileage(parseInt(filePath, line, parts[10]));
 		vehicle.setMaintenanceInterval(parseInt(filePath, line, parts[11]));
 		vehicle.setLastMaintenanceMileage(parseInt(filePath, line, parts[12]));
@@ -671,16 +675,17 @@ public class FileManager {
 		Employee employee;
 		if (type.equals("BRANCH_MANAGER")) {
 			BranchManager branchManager = new BranchManager();
-			Branch managedBranch = findBranchByID(branches, parseInt(filePath, line, parts[8]));
+			int managedBranchID = parseInt(filePath, line, parts[8]);
+			Branch managedBranch = findBranchByID(branches, managedBranchID);
+			validateFound(filePath, line, "Managed branch", managedBranchID, managedBranch);
 			branchManager.setManagedBranch(managedBranch);
-			if (managedBranch != null) {
-				managedBranch.setBranchManager(branchManager);
-			}
 			employee = branchManager;
 		} else if (type.equals("MECHANIC")) {
 			employee = new Mechanic();
-		} else {
+		} else if (type.equals("RENTAL_AGENT")) {
 			employee = new RentalAgent();
+		} else {
+			throw new InvalidFileFormatException("Invalid employee type in " + filePath + " line: " + line);
 		}
 
 		employee.setEmployeeID(parseInt(filePath, line, parts[0]));
@@ -847,6 +852,24 @@ public class FileManager {
 			throw new InvalidFileFormatException(
 					"Pattern incorrect in " + filePath + ": expected " + expectedPartCount
 							+ " parts but found " + parts.length + " in line: " + line);
+		}
+	}
+
+	private void validateFound(String filePath, String line, String relationName, int id, Object value)
+			throws InvalidFileFormatException {
+		if (value == null) {
+			throw new InvalidFileFormatException(
+					relationName + " ID not found in " + filePath + ": " + id + " in line: " + line);
+		}
+	}
+
+	private <T extends Enum<T>> T parseEnum(String filePath, String line, Class<T> enumType, String value)
+			throws InvalidFileFormatException {
+		try {
+			return Enum.valueOf(enumType, value);
+		} catch (IllegalArgumentException exception) {
+			throw new InvalidFileFormatException("Invalid " + enumType.getSimpleName()
+					+ " value in " + filePath + " line: " + line, exception);
 		}
 	}
 

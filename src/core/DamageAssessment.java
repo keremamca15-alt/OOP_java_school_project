@@ -16,10 +16,10 @@ public class DamageAssessment {
 	}
 
 	public DamageAssessment(int assessmentID, Date assessmentDate, String description, double damageCost) {
-		this.assessmentID = assessmentID;
-		this.assessmentDate = assessmentDate;
-		this.description = description;
-		this.damageCost = damageCost;
+		setAssessmentID(assessmentID);
+		setAssessmentDate(assessmentDate);
+		setDescription(description);
+		setDamageCost(damageCost);
 	}
 
 	public int getAssessmentID() {

@@ -12,8 +12,8 @@ public class Addon {
 
 	public Addon(int addonID, String name, String description, double dailyPrice) {
 		setAddonID(addonID);
-		this.name = name;
-		this.description = description;
+		setName(name);
+		setDescription(description);
 		setDailyPrice(dailyPrice);
 	}
 

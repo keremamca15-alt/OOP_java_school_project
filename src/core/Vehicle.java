@@ -26,12 +26,12 @@ public abstract class Vehicle {
 	}
 
 	public Vehicle(int vehicleID, String plateNumber, String brand, String model, int year, double dailyRate) {
-		this.vehicleID = vehicleID;
-		this.plateNumber = plateNumber;
-		this.brand = brand;
-		this.model = model;
-		this.year = year;
-		this.dailyRate = dailyRate;
+		setVehicleID(vehicleID);
+		setPlateNumber(plateNumber);
+		setBrand(brand);
+		setModel(model);
+		setYear(year);
+		setDailyRate(dailyRate);
 	}
 
 	public int getVehicleID() {

@@ -51,7 +51,6 @@ public class Main {
 
 		Reservation reservation = new Reservation(1, startDate, endDate, ReservationStatus.CONFIRMED);
 		reservation.setVehicle(suv);
-		suv.getReservations().add(reservation);
 
 		int days = reservation.calculateDuration();
 		Addon childSeat = new Addon(1, "Child Seat", "Daily child seat add-on", 7.5);
@@ -102,7 +101,7 @@ public class Main {
 		VehicleStatus maintenanceVehicleStatusAfterComplete = economy.getStatus();
 		int lastMaintenanceMileageAfterComplete = economy.getLastMaintenanceMileage();
 
-		System.out.println("== Reservation ==");
+		System.out.println("== Load / Save ==");
 		System.out.println("Loaded branches: " + branches.size());
 		System.out.println("Loaded customers: " + customers.size());
 		System.out.println("Loaded employees: " + employees.size());
@@ -116,6 +115,8 @@ public class Main {
 		System.out.println("Loaded invoices: " + invoices.size());
 		System.out.println("Loaded branch reports: " + branchReports.size());
 		System.out.println("Saved demo data to data/");
+
+		System.out.println("\n== Reservation ==");
 		System.out.println("Reservation days: " + days);
 		reservation.cancelReservation();
 		System.out.println("Reservation status after cancel: " + reservation.getStatus());
@@ -123,37 +124,39 @@ public class Main {
 		System.out.println("Reservation status after confirm: " + reservation.getStatus());
 		System.out.println("Available vehicles for search range: " + branch.findAvailableVehicles(searchStartDate, searchEndDate).size());
 		System.out.println("Customer search result count: " + searchedVehicles.size());
+		System.out.println("Customer reservation count: " + customer.viewMyReservations().size());
+		System.out.println("Customer reservation vehicle plate: " + customerReservation.getVehicle().getPlateNumber());
 
-		System.out.println("\n== Costs ==");
+		System.out.println("\n== Pickup / Return ==");
+		System.out.println("Rental contract status after return: " + reservation.getRentalContract().getStatus());
+		System.out.println("Vehicle status after return: " + suv.getStatus());
+		System.out.println("Damage assessment cost: " + assessment.getDamageCost());
+		System.out.println("Return invoice total: " + returnInvoice.calculateTotal());
+
+		System.out.println("\n== Payment / Invoice ==");
 		System.out.println("Addon cost: " + addonCost);
 		System.out.println("Vehicle rental cost: " + rentalCost);
 		System.out.println("Used mileage: " + usedMileage);
 		System.out.println("Extra km charge: " + extraKmCharge);
-		System.out.println("Return invoice total: " + returnInvoice.calculateTotal());
-
-		System.out.println("\n== Payments and Loyalty ==");
 		System.out.println("Valid payment processed: " + validPayment.processPayment());
 		System.out.println("Invalid payment processed: " + invalidPayment.processPayment());
-		System.out.println("Customer reservation count: " + customer.viewMyReservations().size());
 		System.out.println("Customer new loyalty points: " + customer.getLoyaltyPoints());
 		System.out.println("Customer loyalty tier: " + customer.getLoyaltyTier());
-		System.out.println("Customer reservation vehicle plate: " + customerReservation.getVehicle().getPlateNumber());
+
+		System.out.println("\n== Maintenance ==");
+		System.out.println("Distance to maintenance: " + distanceToMaintenance);
+		System.out.println("Needs maintenance: " + needsMaintenance);
+		System.out.println("Maintenance status after schedule: " + scheduledStatus);
+		System.out.println("Maintenance vehicle status after schedule: " + maintenanceVehicleStatusAfterSchedule);
+		System.out.println("Maintenance status after complete: " + maintenanceTask.getStatus());
+		System.out.println("Maintenance vehicle status after complete: " + maintenanceVehicleStatusAfterComplete);
+		System.out.println("Last maintenance mileage after complete: " + lastMaintenanceMileageAfterComplete);
 
 		System.out.println("\n== Branch Report ==");
 		System.out.println("Employee count after add: " + employeeCountAfterAdd);
 		System.out.println("Employee count after remove: " + employeeCountAfterRemove);
 		System.out.println("Branch report total vehicles: " + report.getTotalVehicles());
 		System.out.println("Branch report total revenue: " + report.getTotalRevenue());
-
-		System.out.println("\n== Maintenance and Damage ==");
-		System.out.println("Distance to maintenance: " + distanceToMaintenance);
-		System.out.println("Needs maintenance: " + needsMaintenance);
-		System.out.println("Damage assessment cost: " + assessment.getDamageCost());
-		System.out.println("Maintenance status after schedule: " + scheduledStatus);
-		System.out.println("Maintenance vehicle status after schedule: " + maintenanceVehicleStatusAfterSchedule);
-		System.out.println("Maintenance status after complete: " + maintenanceTask.getStatus());
-		System.out.println("Maintenance vehicle status after complete: " + maintenanceVehicleStatusAfterComplete);
-		System.out.println("Last maintenance mileage after complete: " + lastMaintenanceMileageAfterComplete);
 	}
 
 	private static Invoice createPaidInvoice(Date paymentDate, double addonCost) {

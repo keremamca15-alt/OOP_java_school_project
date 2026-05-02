@@ -15,10 +15,10 @@ public class MaintenanceTask {
 	}
 
 	public MaintenanceTask(int maintenanceID, Date maintenanceDate, String description, MaintenanceStatus status) {
-		this.maintenanceID = maintenanceID;
-		this.maintenanceDate = maintenanceDate;
-		this.description = description;
-		this.status = status;
+		setMaintenanceID(maintenanceID);
+		setMaintenanceDate(maintenanceDate);
+		setDescription(description);
+		setStatus(status);
 	}
 
 	public int getMaintenanceID() {

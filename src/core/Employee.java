@@ -11,8 +11,8 @@ public abstract class Employee extends User {
 
 	public Employee(int userID, String name, String surname, String email, int employeeID, double salary) {
 		super(userID, name, surname, email);
-		this.employeeID = employeeID;
-		this.salary = salary;
+		setEmployeeID(employeeID);
+		setSalary(salary);
 	}
 
 	public int getEmployeeID() {

@@ -18,8 +18,8 @@ public class BranchReport {
 	}
 
 	public BranchReport(int reportID, Date generatedDate) {
-		this.reportID = reportID;
-		this.generatedDate = generatedDate;
+		setReportID(reportID);
+		setGeneratedDate(generatedDate);
 	}
 
 	public int getReportID() {

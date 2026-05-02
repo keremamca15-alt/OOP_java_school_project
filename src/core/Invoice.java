@@ -20,7 +20,7 @@ public class Invoice {
 	}
 
 	public Invoice(int invoiceID, double baseAmount, double damageFee, double addonFee) {
-		this.invoiceID = invoiceID;
+		setInvoiceID(invoiceID);
 		setBaseAmount(baseAmount);
 		setDamageFee(damageFee);
 		setAddonFee(addonFee);

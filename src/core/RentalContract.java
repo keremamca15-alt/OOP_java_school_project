@@ -23,10 +23,10 @@ public class RentalContract {
 	}
 
 	public RentalContract(int contractID, Date pickupDate, Date expectedReturnDate, ContractStatus status) {
-		this.contractID = contractID;
-		this.pickupDate = pickupDate;
-		this.expectedReturnDate = expectedReturnDate;
-		this.status = status;
+		setContractID(contractID);
+		setPickupDate(pickupDate);
+		setExpectedReturnDate(expectedReturnDate);
+		setStatus(status);
 	}
 
 	public int getContractID() {

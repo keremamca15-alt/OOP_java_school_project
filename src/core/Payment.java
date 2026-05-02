@@ -20,8 +20,8 @@ public class Payment {
 	public Payment(int paymentID, double amount, Date paymentDate, PaymentPurpose paymentPurpose, int customerID) {
 		setPaymentID(paymentID);
 		setAmount(amount);
-		this.paymentDate = paymentDate;
-		this.paymentPurpose = paymentPurpose;
+		setPaymentDate(paymentDate);
+		setPaymentPurpose(paymentPurpose);
 		setCustomerID(customerID);
 	}
 

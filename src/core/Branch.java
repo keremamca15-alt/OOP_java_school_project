@@ -17,9 +17,9 @@ public class Branch {
 	}
 
 	public Branch(int branchID, String name, String address) {
-		this.branchID = branchID;
-		this.name = name;
-		this.address = address;
+		setBranchID(branchID);
+		setName(name);
+		setAddress(address);
 	}
 
 	public int getBranchID() {

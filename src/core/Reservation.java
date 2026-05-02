@@ -21,10 +21,10 @@ public class Reservation {
 	}
 
 	public Reservation(int reservationID, Date startDate, Date endDate, ReservationStatus status) {
-		this.reservationID = reservationID;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.status = status;
+		setReservationID(reservationID);
+		setStartDate(startDate);
+		setEndDate(endDate);
+		setStatus(status);
 	}
 
 	public int getReservationID() {

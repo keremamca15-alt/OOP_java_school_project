@@ -16,7 +16,7 @@ public class Customer extends User {
 	public Customer(int userID, String name, String surname, String email, int loyaltyPoints, LoyaltyTier loyaltyTier) {
 		super(userID, name, surname, email);
 		setLoyaltyPoints(loyaltyPoints);
-		this.loyaltyTier = loyaltyTier;
+		setLoyaltyTier(loyaltyTier);
 	}
 
 	public int getLoyaltyPoints() {
@@ -70,19 +70,11 @@ public class Customer extends User {
 		}
 	}
 
-	public ArrayList<Vehicle> searchAvailableVehicles() {
-		return new ArrayList<>();
-	}
-
 	public ArrayList<Vehicle> searchAvailableVehicles(Branch branch, Date startDate, Date endDate) {
 		if (branch == null || !isValidDateRange(startDate, endDate)) {
 			return new ArrayList<>();
 		}
 		return branch.findAvailableVehicles(startDate, endDate);
-	}
-
-	public Reservation makeReservation() {
-		return new Reservation();
 	}
 
 	public Reservation makeReservation(int reservationID, Vehicle vehicle, Date startDate, Date endDate)
