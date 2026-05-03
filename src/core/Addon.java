@@ -66,4 +66,9 @@ public class Addon {
 		return dailyPrice * days;
 	}
 
+	@Override
+	public String toString() {
+		return name + " (" + dailyPrice + "/day)";
+	}
+
 }

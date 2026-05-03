@@ -39,7 +39,7 @@ public class WelcomePanel extends JPanel {
         subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitle.setBorder(BorderFactory.createEmptyBorder(4, 0, 32, 0));
 
-        JLabel usernameLabel = new JLabel("Username");
+        JLabel usernameLabel = new JLabel("Email or full name");
         usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.BOLD, 12f));
         usernameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -57,11 +57,10 @@ public class WelcomePanel extends JPanel {
         loginBtn.addActionListener(e -> {
             String username = usernameField.getText().trim();
             if (username.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter a username.", "Login", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please enter an email or full name.", "Login", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            frame.session().setUsername(username);
-            frame.showRoleSelection();
+            frame.login(username);
         });
 
         JPanel orRow = new JPanel();

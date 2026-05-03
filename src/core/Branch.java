@@ -153,4 +153,9 @@ public class Branch {
 		return availableVehicles;
 	}
 
+	@Override
+	public String toString() {
+		return name + " (" + address + ")";
+	}
+
 }

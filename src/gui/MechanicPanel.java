@@ -49,8 +49,8 @@ public class MechanicPanel extends JPanel {
         logoutBtn.addActionListener(e -> frame.showWelcome());
         right.add(logoutBtn);
 
-        JButton switchRoleBtn = new JButton("Switch Role");
-        switchRoleBtn.addActionListener(e -> frame.showRoleSelection());
+        JButton switchRoleBtn = new JButton("Switch User");
+        switchRoleBtn.addActionListener(e -> frame.showWelcome());
         right.add(switchRoleBtn);
 
         header.add(left, BorderLayout.WEST);
