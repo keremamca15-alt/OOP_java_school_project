@@ -234,20 +234,34 @@ public abstract class Vehicle {
 		if (!endDate.after(startDate)) {
 			throw new IllegalArgumentException("Availability end date must be after start date.");
 		}
-		if (status != VehicleStatus.AVAILABLE) {
+		if (status == VehicleStatus.IN_MAINTENANCE || status == VehicleStatus.OUT_OF_SERVICE) {
 			return false;
 		}
 
+		boolean hasKnownRentalPeriod = false;
 		for (Reservation reservation : reservations) {
 			if (reservation.getStatus() == ReservationStatus.CANCELLED) {
 				continue;
+			}
+			if (isActiveRentalPeriod(reservation)) {
+				hasKnownRentalPeriod = true;
 			}
 			if (datesOverlap(startDate, endDate, reservation.getStartDate(), reservation.getEndDate())) {
 				return false;
 			}
 		}
 
+		if (status == VehicleStatus.RENTED && !hasKnownRentalPeriod) {
+			return false;
+		}
+
 		return true;
+	}
+
+	private boolean isActiveRentalPeriod(Reservation reservation) {
+		return reservation.getStatus() == ReservationStatus.CONFIRMED
+				|| reservation.getStatus() == ReservationStatus.PENDING
+				|| reservation.getStatus() == ReservationStatus.COMPLETED;
 	}
 
 	private boolean datesOverlap(Date startDate, Date endDate, Date reservedStartDate, Date reservedEndDate) {

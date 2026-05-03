@@ -120,6 +120,21 @@ public class RentalAgent extends Employee {
 			invoice.setDamageAssessment(damageAssessment);
 			damageAssessment.setInvoice(invoice);
 		}
+
+		if (vehicle.getMileagePolicy() != null) {
+			double extraKmCharge = vehicle.getMileagePolicy()
+					.calculateExtraCharge(days, contract.calculateUsedMileage());
+			invoice.addAdditionalCharge(extraKmCharge);
+		}
+
+		Payment pickupPayment = contract.getPickupPayment();
+		if (pickupPayment != null) {
+			invoice.addPayment(pickupPayment);
+		}
+
+		invoice.calculateRefund();
+		invoice.calculateTotal();
+
 		contract.setInvoice(invoice);
 		contract.closeContract();
 		vehicle.setStatus(VehicleStatus.AVAILABLE);

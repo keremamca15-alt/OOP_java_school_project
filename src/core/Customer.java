@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Customer extends User {
@@ -118,7 +119,18 @@ public class Customer extends User {
 	}
 
 	private boolean isValidDateRange(Date startDate, Date endDate) {
-		return startDate != null && endDate != null && endDate.after(startDate);
+		return startDate != null && endDate != null && endDate.after(startDate)
+				&& !startOfDay(startDate).before(startOfDay(new Date()));
+	}
+
+	private Date startOfDay(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
 	}
 
 }

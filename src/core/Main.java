@@ -9,10 +9,10 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException, InvalidFileFormatException,
 			InvalidReservationException, VehicleNotAvailableException {
-		Date startDate = createDate(2026, Calendar.MAY, 1);
-		Date endDate = createDate(2026, Calendar.MAY, 5);
-		Date searchStartDate = createDate(2026, Calendar.MAY, 2);
-		Date searchEndDate = createDate(2026, Calendar.MAY, 4);
+		Date startDate = createDate(2026, Calendar.MAY, 10);
+		Date endDate = createDate(2026, Calendar.MAY, 14);
+		Date searchStartDate = createDate(2026, Calendar.MAY, 11);
+		Date searchEndDate = createDate(2026, Calendar.MAY, 13);
 
 		FileManager fileManager = new FileManager();
 		ArrayList<Branch> branches = fileManager.loadBranches();

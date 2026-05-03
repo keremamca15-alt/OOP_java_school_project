@@ -79,6 +79,9 @@ public class MaintenanceTask {
 	}
 
 	public void scheduleMaintenance() {
+		if (vehicle != null && vehicle.getStatus() == VehicleStatus.RENTED) {
+			throw new IllegalStateException("Rented vehicle cannot be scheduled for maintenance.");
+		}
 		status = MaintenanceStatus.SCHEDULED;
 		if (vehicle != null) {
 			vehicle.setStatus(VehicleStatus.IN_MAINTENANCE);
@@ -87,7 +90,7 @@ public class MaintenanceTask {
 
 	public void completeMaintenance() {
 		status = MaintenanceStatus.COMPLETED;
-		if (vehicle != null) {
+		if (vehicle != null && vehicle.getStatus() == VehicleStatus.IN_MAINTENANCE) {
 			vehicle.setLastMaintenanceMileage(vehicle.getCurrentMileage());
 			vehicle.setStatus(VehicleStatus.AVAILABLE);
 		}

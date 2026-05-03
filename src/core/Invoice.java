@@ -159,7 +159,9 @@ public class Invoice {
 	public double calculatePaidAmount() {
 		double paidAmount = 0.0;
 		for (Payment payment : payments) {
-			if (payment.processPayment() && payment.getPaymentPurpose() != PaymentPurpose.REFUND) {
+			if (payment.processPayment()
+					&& payment.getPaymentPurpose() != PaymentPurpose.REFUND
+					&& payment.getPaymentPurpose() != PaymentPurpose.DEPOSIT) {
 				paidAmount += payment.getAmount();
 			}
 		}
