@@ -1,0 +1,5 @@
+1|Bornova Branch|Bornova, Izmir
+2|Karsiyaka Branch|Karsiyaka, Izmir
+3|Konak Branch|Konak, Izmir
+4|Buca Branch|Buca, Izmir
+5|Gaziemir Airport Branch|Gaziemir, Izmir

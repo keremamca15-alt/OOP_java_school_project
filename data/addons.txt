@@ -1,0 +1,5 @@
+1|Child Seat|Daily child seat add-on|7.5
+2|GPS|Navigation device|5.0
+3|Additional Driver|Extra authorized driver|12.5
+4|Snow Chains|Winter road equipment|6.0
+5|Wifi Hotspot|Portable internet device|8.0
