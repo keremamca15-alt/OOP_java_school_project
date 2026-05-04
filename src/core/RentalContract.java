@@ -185,14 +185,50 @@ public class RentalContract {
 		if (invoice == null) {
 			return depositAmount;
 		}
-		double remainingAmount = invoice.calculateRemainingAmount();
-		if (remainingAmount <= 0) {
+		double returnExtraCost = invoice.calculateReturnExtraCost();
+		if (returnExtraCost <= 0) {
 			return depositAmount;
 		}
-		if (remainingAmount >= depositAmount) {
+		if (returnExtraCost >= depositAmount) {
 			return 0.0;
 		}
-		return depositAmount - remainingAmount;
+		return depositAmount - returnExtraCost;
+	}
+
+	public double calculateDepositUsedForExtras() {
+		if (invoice == null) {
+			return 0.0;
+		}
+		double returnExtraCost = invoice.calculateReturnExtraCost();
+		if (returnExtraCost <= 0) {
+			return 0.0;
+		}
+		if (returnExtraCost > depositAmount) {
+			return depositAmount;
+		}
+		return returnExtraCost;
+	}
+
+	public double calculateAdditionalChargeAfterDeposit() {
+		if (invoice == null) {
+			return 0.0;
+		}
+		double returnExtraCost = invoice.calculateReturnExtraCost();
+		if (returnExtraCost <= depositAmount) {
+			return 0.0;
+		}
+		return returnExtraCost - depositAmount;
+	}
+
+	public double calculateRemainingAmountAfterDeposit() {
+		if (invoice == null) {
+			return 0.0;
+		}
+		double remainingAmount = invoice.calculateRemainingAmount() - calculateDepositUsedForExtras();
+		if (remainingAmount < 0) {
+			return 0.0;
+		}
+		return remainingAmount;
 	}
 
 }

@@ -167,6 +167,70 @@ public class AppState {
         return maxID + 1;
     }
 
+    public int createNextRentalContractID() {
+        int maxID = 0;
+        for (RentalContract contract : rentalContracts) {
+            if (contract.getContractID() > maxID) {
+                maxID = contract.getContractID();
+            }
+        }
+        return maxID + 1;
+    }
+
+    public int createNextInvoiceID() {
+        int maxID = 0;
+        for (Invoice invoice : invoices) {
+            if (invoice.getInvoiceID() > maxID) {
+                maxID = invoice.getInvoiceID();
+            }
+        }
+        return maxID + 1;
+    }
+
+    public int createNextDamageAssessmentID() {
+        int maxID = 0;
+        for (DamageAssessment assessment : damageAssessments) {
+            if (assessment.getAssessmentID() > maxID) {
+                maxID = assessment.getAssessmentID();
+            }
+        }
+        return maxID + 1;
+    }
+
+    public int createNextPaymentID() {
+        int maxID = 0;
+        for (Payment payment : payments) {
+            if (payment.getPaymentID() > maxID) {
+                maxID = payment.getPaymentID();
+            }
+        }
+        return maxID + 1;
+    }
+
+    public void addRentalContractIfMissing(RentalContract contract) {
+        if (contract != null && !rentalContracts.contains(contract)) {
+            rentalContracts.add(contract);
+        }
+    }
+
+    public void addInvoiceIfMissing(Invoice invoice) {
+        if (invoice != null && !invoices.contains(invoice)) {
+            invoices.add(invoice);
+        }
+    }
+
+    public void addDamageAssessmentIfMissing(DamageAssessment assessment) {
+        if (assessment != null && !damageAssessments.contains(assessment)) {
+            damageAssessments.add(assessment);
+        }
+    }
+
+    public void addPaymentIfMissing(Payment payment) {
+        if (payment != null && !payments.contains(payment)) {
+            payments.add(payment);
+        }
+    }
+
     private void refreshEmployeeRoleLists() {
         rentalAgents = new ArrayList<>();
         mechanics = new ArrayList<>();

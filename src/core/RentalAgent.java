@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class RentalAgent extends Employee {
 
+	private static final double DEFAULT_DEPOSIT_AMOUNT = 300.0;
+
 	private ArrayList<DamageAssessment> damageAssessments = new ArrayList<>();
 	private ArrayList<RentalContract> rentalContracts = new ArrayList<>();
 
@@ -70,6 +72,7 @@ public class RentalAgent extends Employee {
 			}
 		}
 
+		preparePickupDeposit(reservation, contract);
 		reservation.getVehicle().setStatus(VehicleStatus.RENTED);
 	}
 
@@ -127,12 +130,6 @@ public class RentalAgent extends Employee {
 			invoice.addAdditionalCharge(extraKmCharge);
 		}
 
-		Payment pickupPayment = contract.getPickupPayment();
-		if (pickupPayment != null) {
-			invoice.addPayment(pickupPayment);
-		}
-
-		invoice.calculateRefund();
 		invoice.calculateTotal();
 
 		contract.setInvoice(invoice);
@@ -140,6 +137,18 @@ public class RentalAgent extends Employee {
 		vehicle.setStatus(VehicleStatus.AVAILABLE);
 		reservation.setStatus(ReservationStatus.COMPLETED);
 		return invoice;
+	}
+
+	private void preparePickupDeposit(Reservation reservation, RentalContract contract) {
+		double depositAmount = contract.getDepositAmount();
+		if (depositAmount <= 0 && reservation.getDepositAmount() > 0) {
+			depositAmount = reservation.getDepositAmount();
+		}
+		if (depositAmount <= 0) {
+			depositAmount = DEFAULT_DEPOSIT_AMOUNT;
+		}
+		contract.setDepositAmount(depositAmount);
+		reservation.setDepositAmount(depositAmount);
 	}
 
 	/**

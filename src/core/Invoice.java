@@ -176,6 +176,10 @@ public class Invoice {
 		return remainingAmount;
 	}
 
+	public double calculateReturnExtraCost() {
+		return damageFee + additionalCharges;
+	}
+
 	public double calculateTotal() {
 		totalAmount = calculateTotalBeforeRefund() - refundAmount;
 		if (totalAmount < 0) {
