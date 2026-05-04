@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -47,6 +48,9 @@ public class RentalAgentPanel extends JPanel {
     private final DefaultTableModel pickupModel = createReservationTableModel();
     private final DefaultTableModel activeContractModel = createContractTableModel();
     private final DefaultTableModel allReservationModel = createReservationTableModel();
+    private final DefaultTableModel invoiceModel = createInvoiceTableModel();
+    private final DefaultTableModel damageAssessmentModel = createDamageAssessmentTableModel();
+    private final DefaultTableModel invoicePaymentModel = createInvoicePaymentTableModel();
 
     public RentalAgentPanel(MainFrame frame) {
         setLayout(new BorderLayout());
@@ -59,6 +63,8 @@ public class RentalAgentPanel extends JPanel {
         tabs.addTab("Active Contracts", buildActiveContractsTab());
         tabs.addTab("Process Return", buildReturnTab(frame));
         tabs.addTab("All Reservations", buildAllReservationsTab());
+        tabs.addTab("Invoices", buildInvoicesTab(frame));
+        tabs.addTab("Damage Assessments", buildDamageAssessmentsTab());
         add(tabs, BorderLayout.CENTER);
     }
 
@@ -123,12 +129,16 @@ public class RentalAgentPanel extends JPanel {
         JButton pickupButton = new JButton("Process Pickup");
         pickupButton.addActionListener(e -> processSelectedPickup(frame, table));
 
+        JButton cancelButton = new JButton("Cancel Selected Reservation");
+        cancelButton.addActionListener(e -> cancelSelectedReservation(frame, table, pickupModel));
+
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(e -> refreshTables(frame));
 
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 6));
         actions.add(confirmButton);
         actions.add(pickupButton);
+        actions.add(cancelButton);
         actions.add(refreshButton);
 
         panel.add(actions, BorderLayout.NORTH);
@@ -221,9 +231,76 @@ public class RentalAgentPanel extends JPanel {
     }
 
     private JPanel buildAllReservationsTab() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout(8, 8));
         panel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
         JTable table = new JTable(allReservationModel);
+        table.setAutoCreateRowSorter(true);
+
+        JButton cancelButton = new JButton("Cancel Selected Reservation");
+        cancelButton.addActionListener(e -> cancelSelectedReservation(getRootFrame(), table, allReservationModel));
+
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 6));
+        actions.add(cancelButton);
+
+        panel.add(actions, BorderLayout.NORTH);
+        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        return panel;
+    }
+
+    private JPanel buildInvoicesTab(MainFrame frame) {
+        JPanel panel = new JPanel(new BorderLayout(8, 8));
+        panel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+
+        JTable table = new JTable(invoiceModel);
+        table.setAutoCreateRowSorter(true);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JTextArea detailArea = new JTextArea(12, 36);
+        detailArea.setEditable(false);
+        JTable paymentTable = new JTable(invoicePaymentModel);
+        paymentTable.setAutoCreateRowSorter(true);
+        paymentTable.setRowHeight(28);
+        paymentTable.setFillsViewportHeight(true);
+
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                updateInvoiceDetail(table, detailArea);
+            }
+        });
+
+        JButton refreshButton = new JButton("Refresh");
+        refreshButton.addActionListener(e -> {
+            refreshTables(frame);
+            updateInvoiceDetail(table, detailArea);
+        });
+
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 6));
+        actions.add(refreshButton);
+
+        JPanel detailPanel = new JPanel(new BorderLayout(8, 8));
+        detailPanel.setBorder(BorderFactory.createTitledBorder("Invoice Detail"));
+        JScrollPane detailScroll = new JScrollPane(detailArea);
+        detailScroll.setPreferredSize(new java.awt.Dimension(420, 260));
+        JScrollPane paymentScroll = new JScrollPane(paymentTable);
+        paymentScroll.setPreferredSize(new java.awt.Dimension(420, 220));
+        paymentScroll.setMinimumSize(new java.awt.Dimension(360, 180));
+        detailPanel.add(detailScroll, BorderLayout.NORTH);
+        detailPanel.add(paymentScroll, BorderLayout.CENTER);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                new JScrollPane(table),
+                detailPanel);
+        splitPane.setResizeWeight(0.62);
+
+        panel.add(actions, BorderLayout.NORTH);
+        panel.add(splitPane, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private JPanel buildDamageAssessmentsTab() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        JTable table = new JTable(damageAssessmentModel);
         table.setAutoCreateRowSorter(true);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
         return panel;
@@ -325,9 +402,13 @@ public class RentalAgentPanel extends JPanel {
             }
 
             Invoice invoice = agent.processReturn(reservation, assessment, finalMileage);
+            invoice.applyDiscount(reservation.getCustomer());
+            invoice.calculateTotal();
             invoice.setInvoiceID(frame.appState().createNextInvoiceID());
             frame.appState().addInvoiceIfMissing(invoice);
+            addReservationPrepaymentToInvoice(reservation, invoice);
             createReturnPayments(frame, reservation, contract, invoice);
+            awardLoyaltyPoints(reservation, invoice);
 
             if (saveAndRefresh(frame)) {
                 invoicePreviewArea.setText(formatInvoicePreview(invoice));
@@ -340,6 +421,43 @@ public class RentalAgentPanel extends JPanel {
             showWarning("Final mileage and damage cost must be numeric.");
         } catch (IllegalArgumentException | InvalidReservationException exception) {
             showWarning(exception.getMessage());
+        }
+    }
+
+    private void cancelSelectedReservation(MainFrame frame, JTable table, DefaultTableModel model) {
+        Reservation reservation = getSelectedReservation(table, model);
+        if (reservation == null) {
+            showWarning("Please select a reservation.");
+            return;
+        }
+        if (reservation.getStatus() != ReservationStatus.PENDING
+                && reservation.getStatus() != ReservationStatus.CONFIRMED) {
+            showWarning("Only pending or confirmed reservations can be cancelled.");
+            return;
+        }
+        RentalContract contract = reservation.getRentalContract();
+        if (contract != null && contract.getStatus() == ContractStatus.ACTIVE) {
+            showWarning("Active contracts cannot be cancelled from reservation screen.");
+            return;
+        }
+
+        reservation.cancelReservation();
+        if (saveAndRefresh(frame)) {
+            JOptionPane.showMessageDialog(this,
+                    "Reservation " + reservation.getReservationID() + " cancelled.",
+                    "Cancel Reservation",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void awardLoyaltyPoints(Reservation reservation, Invoice invoice) {
+        Customer customer = reservation.getCustomer();
+        if (customer == null) {
+            return;
+        }
+        double paidAmount = invoice.calculatePaidAmount();
+        if (paidAmount > 0) {
+            customer.earnPoints(paidAmount);
         }
     }
 
@@ -359,19 +477,6 @@ public class RentalAgentPanel extends JPanel {
     }
 
     private void createReturnPayments(MainFrame frame, Reservation reservation, RentalContract contract, Invoice invoice) {
-        double rentalAmountToCollect = invoice.calculateTotal() - invoice.calculateReturnExtraCost();
-        if (rentalAmountToCollect > 0) {
-            Payment rentalPayment = new Payment(
-                    frame.appState().createNextPaymentID(),
-                    rentalAmountToCollect,
-                    new Date(),
-                    PaymentPurpose.PREPAYMENT,
-                    getCustomerID(reservation));
-            rentalPayment.setCustomer(reservation.getCustomer());
-            rentalPayment.setInvoice(invoice);
-            frame.appState().addPaymentIfMissing(rentalPayment);
-        }
-
         double additionalChargeAmount = contract.calculateAdditionalChargeAfterDeposit();
         if (additionalChargeAmount > 0) {
             Payment additionalChargePayment = new Payment(
@@ -398,6 +503,13 @@ public class RentalAgentPanel extends JPanel {
             refundPayment.setRentalContract(contract);
             refundPayment.setInvoice(invoice);
             frame.appState().addPaymentIfMissing(refundPayment);
+        }
+    }
+
+    private void addReservationPrepaymentToInvoice(Reservation reservation, Invoice invoice) {
+        Payment prepayment = reservation.getPrepayment();
+        if (prepayment != null && prepayment.processPayment()) {
+            invoice.addPayment(prepayment);
         }
     }
 
@@ -501,6 +613,8 @@ public class RentalAgentPanel extends JPanel {
         fillPickupTable(frame);
         fillAllReservationTable(frame);
         fillActiveContractTable(frame);
+        fillInvoiceTable(frame);
+        fillDamageAssessmentTable(frame);
     }
 
     private void fillPickupTable(MainFrame frame) {
@@ -554,6 +668,116 @@ public class RentalAgentPanel extends JPanel {
         }
     }
 
+    private void fillInvoiceTable(MainFrame frame) {
+        invoiceModel.setRowCount(0);
+        Branch branch = getAgentBranch(frame);
+        if (branch == null) {
+            return;
+        }
+        for (Invoice invoice : frame.appState().getInvoices()) {
+            RentalContract contract = invoice.getRentalContract();
+            Reservation reservation = null;
+            if (contract != null) {
+                reservation = contract.getReservation();
+            }
+            if (reservation != null && isSameBranch(reservation, branch)) {
+                invoiceModel.addRow(new Object[]{
+                        invoice.getInvoiceID(),
+                        contract.getContractID(),
+                        reservation.getReservationID(),
+                        getCustomerName(reservation),
+                        getVehiclePlate(reservation),
+                        invoice.getDiscountAmount(),
+                        invoice.calculateTotal(),
+                        invoice.calculatePaidAmount(),
+                        getRemainingAfterDeposit(contract, invoice),
+                        contract.calculateDepositRefund(),
+                        contract.calculateAdditionalChargeAfterDeposit()
+                });
+            }
+        }
+    }
+
+    private void fillDamageAssessmentTable(MainFrame frame) {
+        damageAssessmentModel.setRowCount(0);
+        Branch branch = getAgentBranch(frame);
+        if (branch == null) {
+            return;
+        }
+        for (DamageAssessment assessment : frame.appState().getDamageAssessments()) {
+            Vehicle vehicle = assessment.getVehicle();
+            if (vehicle == null || vehicle.getBranch() != branch) {
+                continue;
+            }
+            Reservation reservation = getReservationForAssessment(assessment);
+            damageAssessmentModel.addRow(new Object[]{
+                    assessment.getAssessmentID(),
+                    formatDate(assessment.getAssessmentDate()),
+                    vehicle.getPlateNumber(),
+                    getCustomerName(reservation),
+                    getReservationID(reservation),
+                    getInvoiceID(assessment.getInvoice()),
+                    assessment.getDescription(),
+                    assessment.getDamageCost()
+            });
+        }
+    }
+
+    private void updateInvoiceDetail(JTable table, JTextArea detailArea) {
+        Invoice invoice = getSelectedInvoice(table);
+        invoicePaymentModel.setRowCount(0);
+        if (invoice == null) {
+            detailArea.setText("Select an invoice.");
+            return;
+        }
+
+        RentalContract contract = invoice.getRentalContract();
+        double depositHeld = 0.0;
+        double depositUsed = 0.0;
+        double depositRefund = 0.0;
+        double additionalAfterDeposit = 0.0;
+        double remainingAfterDeposit = invoice.calculateRemainingAmount();
+        if (contract != null) {
+            depositHeld = contract.getDepositAmount();
+            depositUsed = contract.calculateDepositUsedForExtras();
+            depositRefund = contract.calculateDepositRefund();
+            additionalAfterDeposit = contract.calculateAdditionalChargeAfterDeposit();
+            remainingAfterDeposit = contract.calculateRemainingAmountAfterDeposit();
+        }
+
+        detailArea.setText("Invoice ID: " + invoice.getInvoiceID()
+                + "\nBase amount: " + invoice.getBaseAmount()
+                + "\nAddon fee: " + invoice.getAddonFee()
+                + "\nDiscount: " + invoice.getDiscountAmount()
+                + "\nDamage fee: " + invoice.getDamageFee()
+                + "\nExtra km/additional: " + invoice.getAdditionalCharges()
+                + "\nTotal: " + invoice.calculateTotal()
+                + "\nPaid: " + invoice.calculatePaidAmount()
+                + "\nRemaining before deposit: " + invoice.calculateRemainingAmount()
+                + "\nDeposit held: " + depositHeld
+                + "\nDeposit used: " + depositUsed
+                + "\nDeposit refund: " + depositRefund
+                + "\nAdditional after deposit: " + additionalAfterDeposit
+                + "\nRemaining after deposit: " + remainingAfterDeposit);
+
+        for (Payment payment : invoice.getPayments()) {
+            addPaymentRow(payment);
+        }
+        if (contract != null && contract.getPickupPayment() != null
+                && !invoice.getPayments().contains(contract.getPickupPayment())) {
+            addPaymentRow(contract.getPickupPayment());
+        }
+    }
+
+    private void addPaymentRow(Payment payment) {
+        invoicePaymentModel.addRow(new Object[]{
+                payment.getPaymentID(),
+                formatDate(payment.getPaymentDate()),
+                payment.getPaymentPurpose(),
+                payment.getAmount()
+        });
+    }
+
     private void addReservationRow(DefaultTableModel model, Reservation reservation) {
         model.addRow(new Object[]{
                 reservation.getReservationID(),
@@ -563,8 +787,51 @@ public class RentalAgentPanel extends JPanel {
                 formatDate(reservation.getStartDate()),
                 formatDate(reservation.getEndDate()),
                 reservation.getStatus(),
-                getContractID(reservation)
+                getContractID(reservation),
+                reservation.getPrePaymentAmount(),
+                reservation.getDepositAmount()
         });
+    }
+
+    private Invoice getSelectedInvoice(JTable table) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow < 0) {
+            return null;
+        }
+        int modelRow = table.convertRowIndexToModel(selectedRow);
+        int invoiceID = (int) invoiceModel.getValueAt(modelRow, 0);
+        return findInvoice(invoiceID);
+    }
+
+    private Invoice findInvoice(int invoiceID) {
+        for (Invoice invoice : getRootFrame().appState().getInvoices()) {
+            if (invoice.getInvoiceID() == invoiceID) {
+                return invoice;
+            }
+        }
+        return null;
+    }
+
+    private Reservation getReservationForAssessment(DamageAssessment assessment) {
+        if (assessment.getInvoice() != null
+                && assessment.getInvoice().getRentalContract() != null) {
+            return assessment.getInvoice().getRentalContract().getReservation();
+        }
+        return null;
+    }
+
+    private int getReservationID(Reservation reservation) {
+        if (reservation == null) {
+            return 0;
+        }
+        return reservation.getReservationID();
+    }
+
+    private int getInvoiceID(Invoice invoice) {
+        if (invoice == null) {
+            return 0;
+        }
+        return invoice.getInvoiceID();
     }
 
     private RentalContract getSelectedContract(JTable table) {
@@ -625,6 +892,9 @@ public class RentalAgentPanel extends JPanel {
     }
 
     private String getCustomerName(Reservation reservation) {
+        if (reservation == null) {
+            return "-";
+        }
         Customer customer = reservation.getCustomer();
         if (customer == null) {
             return "-";
@@ -701,6 +971,7 @@ public class RentalAgentPanel extends JPanel {
         return "Invoice ID: " + invoice.getInvoiceID()
                 + "\nBase amount: " + invoice.getBaseAmount()
                 + "\nAddon fee: " + invoice.getAddonFee()
+                + "\nDiscount: " + invoice.getDiscountAmount()
                 + "\nDamage fee: " + invoice.getDamageFee()
                 + "\nAdditional charges: " + invoice.getAdditionalCharges()
                 + "\nReturn extra cost: " + invoice.calculateReturnExtraCost()
@@ -730,7 +1001,8 @@ public class RentalAgentPanel extends JPanel {
 
     private DefaultTableModel createReservationTableModel() {
         return new DefaultTableModel(
-                new Object[]{"Reservation ID", "Customer", "Vehicle", "Branch", "Start Date", "End Date", "Status", "Contract ID"},
+                new Object[]{"Reservation ID", "Customer", "Vehicle", "Branch", "Start Date", "End Date", "Status",
+                        "Contract ID", "Prepayment", "Deposit"},
                 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -742,6 +1014,41 @@ public class RentalAgentPanel extends JPanel {
     private DefaultTableModel createContractTableModel() {
         return new DefaultTableModel(
                 new Object[]{"Contract ID", "Reservation ID", "Customer", "Vehicle", "Pickup Date", "Expected Return", "Status"},
+                0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+    }
+
+    private DefaultTableModel createInvoiceTableModel() {
+        return new DefaultTableModel(
+                new Object[]{"Invoice ID", "Contract ID", "Reservation ID", "Customer", "Vehicle", "Discount",
+                        "Total", "Paid", "Remaining", "Deposit Refund", "Additional After Deposit"},
+                0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+    }
+
+    private DefaultTableModel createInvoicePaymentTableModel() {
+        return new DefaultTableModel(
+                new Object[]{"Payment ID", "Date", "Purpose", "Amount"},
+                0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+    }
+
+    private DefaultTableModel createDamageAssessmentTableModel() {
+        return new DefaultTableModel(
+                new Object[]{"Assessment ID", "Date", "Vehicle", "Customer", "Reservation ID", "Invoice ID",
+                        "Description", "Cost"},
                 0) {
             @Override
             public boolean isCellEditable(int row, int column) {

@@ -13,6 +13,10 @@ public class RentalAgent extends Employee {
 	public RentalAgent() {
 	}
 
+	public static double getDefaultDepositAmount() {
+		return DEFAULT_DEPOSIT_AMOUNT;
+	}
+
 	public ArrayList<DamageAssessment> getDamageAssessments() {
 		return damageAssessments;
 	}

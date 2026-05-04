@@ -25,7 +25,7 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         super("Car Rental Agency");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(1100, 720);
+        setSize(1300, 820);
         setLocationRelativeTo(null);
 
         cards.add(new WelcomePanel(this), "welcome");
