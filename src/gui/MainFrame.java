@@ -23,7 +23,7 @@ public class MainFrame extends JFrame {
     private String loadErrorMessage;
 
     public MainFrame() {
-        super("Car Rental Agency");
+        super("Kepler");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1300, 820);
         setLocationRelativeTo(null);

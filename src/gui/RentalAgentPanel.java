@@ -35,7 +35,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
@@ -1064,12 +1063,4 @@ public class RentalAgentPanel extends JPanel {
                 JOptionPane.WARNING_MESSAGE);
     }
 
-    private static JPanel placeholder(String message) {
-        JPanel p = new JPanel(new GridBagLayout());
-        JLabel label = new JLabel(message);
-        label.setFont(label.getFont().deriveFont(Font.ITALIC, 13f));
-        label.setForeground(Color.GRAY);
-        p.add(label);
-        return p;
-    }
 }

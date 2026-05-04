@@ -433,15 +433,6 @@ public class CustomerPanel extends JPanel {
         return tab;
     }
 
-    private static JPanel placeholder(String message) {
-        JPanel p = new JPanel(new GridBagLayout());
-        JLabel label = new JLabel(message);
-        label.setFont(label.getFont().deriveFont(Font.ITALIC, 13f));
-        label.setForeground(Color.GRAY);
-        p.add(label);
-        return p;
-    }
-
     private static class AddonListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index,
