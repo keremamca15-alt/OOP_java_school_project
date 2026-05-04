@@ -18,7 +18,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ public class GuestPanel extends JPanel {
         JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("Browse Vehicles",  buildBrowseTab(frame));
         tabs.addTab("Our Branches",     buildBranchesTab(frame));
-        tabs.addTab("About",            buildAboutTab());
         add(tabs, BorderLayout.CENTER);
     }
 
@@ -49,12 +47,9 @@ public class GuestPanel extends JPanel {
         header.setBackground(new Color(60, 60, 60));
         header.setBorder(BorderFactory.createEmptyBorder(10, 16, 10, 16));
 
-        JLabel title = new JLabel("Car Rental Agency — Guest View");
+        JLabel title = new JLabel("Kepler - Guest");
         title.setFont(title.getFont().deriveFont(Font.BOLD, 16f));
         title.setForeground(Color.WHITE);
-
-        JLabel note = new JLabel("Browsing as guest (read-only)");
-        note.setForeground(new Color(190, 190, 190));
 
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         left.setOpaque(false);
@@ -62,7 +57,6 @@ public class GuestPanel extends JPanel {
 
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         right.setOpaque(false);
-        right.add(note);
 
         JButton loginBtn = new JButton("Login / Sign In");
         loginBtn.addActionListener(e -> frame.showWelcome());
@@ -166,35 +160,6 @@ public class GuestPanel extends JPanel {
 
         tab.add(new JScrollPane(new JTable(model)), BorderLayout.CENTER);
         return tab;
-    }
-
-    private JPanel buildAboutTab() {
-        JPanel tab = new JPanel(new GridBagLayout());
-        tab.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        JPanel info = new JPanel();
-        info.setLayout(new javax.swing.BoxLayout(info, javax.swing.BoxLayout.Y_AXIS));
-        info.setBorder(BorderFactory.createTitledBorder("About Us"));
-
-        info.add(new JLabel("Welcome to Car Rental Agency!"));
-        info.add(new JLabel(" "));
-        info.add(new JLabel("We offer Economy, SUV, Luxury and Van vehicle options"));
-        info.add(new JLabel("across multiple branch locations."));
-        info.add(new JLabel(" "));
-        info.add(new JLabel("Create an account or log in to make reservations,"));
-        info.add(new JLabel("earn loyalty points and access exclusive member discounts."));
-
-        tab.add(info);
-        return tab;
-    }
-
-    private static JPanel placeholder(String message) {
-        JPanel p = new JPanel(new GridBagLayout());
-        JLabel label = new JLabel(message);
-        label.setFont(label.getFont().deriveFont(Font.ITALIC, 13f));
-        label.setForeground(Color.GRAY);
-        p.add(label);
-        return p;
     }
 
     private DefaultTableModel createVehicleTableModel() {

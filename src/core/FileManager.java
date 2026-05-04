@@ -92,9 +92,11 @@ public class FileManager {
 			String[] parts = splitLine(filePath, line, 9);
 			Employee employee = createEmployee(filePath, line, parts, branches);
 			int branchID = parseInt(filePath, line, parts[7]);
-			Branch branch = findBranchByID(branches, branchID);
-			validateFound(filePath, line, "Branch", branchID, branch);
-			branch.addEmployee(employee);
+			if (branchID != 0) {
+				Branch branch = findBranchByID(branches, branchID);
+				validateFound(filePath, line, "Branch", branchID, branch);
+				branch.addEmployee(employee);
+			}
 			employees.add(employee);
 		}
 		scanner.close();
@@ -118,9 +120,11 @@ public class FileManager {
 			String[] parts = splitLine(filePath, line, 14);
 			Vehicle vehicle = createVehicle(filePath, line, parts);
 			int branchID = parseInt(filePath, line, parts[13]);
-			Branch branch = findBranchByID(branches, branchID);
-			validateFound(filePath, line, "Branch", branchID, branch);
-			branch.addVehicle(vehicle);
+			if (branchID != 0) {
+				Branch branch = findBranchByID(branches, branchID);
+				validateFound(filePath, line, "Branch", branchID, branch);
+				branch.addVehicle(vehicle);
+			}
 			vehicles.add(vehicle);
 		}
 		scanner.close();
@@ -676,9 +680,11 @@ public class FileManager {
 		if (type.equals("BRANCH_MANAGER")) {
 			BranchManager branchManager = new BranchManager();
 			int managedBranchID = parseInt(filePath, line, parts[8]);
-			Branch managedBranch = findBranchByID(branches, managedBranchID);
-			validateFound(filePath, line, "Managed branch", managedBranchID, managedBranch);
-			branchManager.setManagedBranch(managedBranch);
+			if (managedBranchID != 0) {
+				Branch managedBranch = findBranchByID(branches, managedBranchID);
+				validateFound(filePath, line, "Managed branch", managedBranchID, managedBranch);
+				branchManager.setManagedBranch(managedBranch);
+			}
 			employee = branchManager;
 		} else if (type.equals("MECHANIC")) {
 			employee = new Mechanic();

@@ -20,7 +20,14 @@ public class BranchManager extends Employee {
 	}
 
 	public void setManagedBranch(Branch managedBranch) {
+		if (this.managedBranch == managedBranch) {
+			return;
+		}
+		Branch previousBranch = this.managedBranch;
 		this.managedBranch = managedBranch;
+		if (previousBranch != null && previousBranch.getBranchManager() == this) {
+			previousBranch.setBranchManager(null);
+		}
 		if (managedBranch != null && managedBranch.getBranchManager() != this) {
 			managedBranch.setBranchManager(this);
 		}
@@ -61,13 +68,12 @@ public class BranchManager extends Employee {
 		if (managedBranch == null) {
 			throw new IllegalStateException("Branch manager does not manage a branch.");
 		}
-		for (Employee employee : managedBranch.getEmployees()) {
+		for (Employee employee : new ArrayList<>(managedBranch.getEmployees())) {
 			if (employee.getEmployeeID() == employeeID) {
 				employee.setBranch(null);
 				break;
 			}
 		}
-		managedBranch.getEmployees().removeIf(employee -> employee.getEmployeeID() == employeeID);
 	}
 
 	/**

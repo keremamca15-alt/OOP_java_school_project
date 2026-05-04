@@ -153,6 +153,12 @@ public abstract class Vehicle {
 	}
 
 	public void setBranch(Branch branch) {
+		if (this.branch == branch) {
+			return;
+		}
+		if (this.branch != null) {
+			this.branch.getVehicles().remove(this);
+		}
 		this.branch = branch;
 		if (branch != null && !branch.getVehicles().contains(this)) {
 			branch.getVehicles().add(this);

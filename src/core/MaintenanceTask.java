@@ -90,7 +90,8 @@ public class MaintenanceTask {
 
 	public void completeMaintenance() {
 		status = MaintenanceStatus.COMPLETED;
-		if (vehicle != null && vehicle.getStatus() == VehicleStatus.IN_MAINTENANCE) {
+		maintenanceDate = new Date();
+		if (vehicle != null) {
 			vehicle.setLastMaintenanceMileage(vehicle.getCurrentMileage());
 			vehicle.setStatus(VehicleStatus.AVAILABLE);
 		}

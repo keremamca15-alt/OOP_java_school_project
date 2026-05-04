@@ -17,6 +17,7 @@ import core.RentalAgent;
 import core.RentalContract;
 import core.Reservation;
 import core.Vehicle;
+import core.VehicleStatus;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class AppState {
         damageAssessments = fileManager.loadDamageAssessments(vehicles, rentalAgents);
         invoices = fileManager.loadInvoices(rentalContracts, damageAssessments, payments);
         branchReports = fileManager.loadBranchReports(branches, branchManagers);
+        applyMaintenanceStatusRules();
     }
 
     public void saveAll() throws FileNotFoundException {
@@ -207,6 +209,41 @@ public class AppState {
         return maxID + 1;
     }
 
+    public int createNextMaintenanceID() {
+        int maxID = 0;
+        for (MaintenanceTask task : maintenanceTasks) {
+            if (task.getMaintenanceID() > maxID) {
+                maxID = task.getMaintenanceID();
+            }
+        }
+        return maxID + 1;
+    }
+
+    public int createNextEmployeeID() {
+        int maxID = 0;
+        for (Employee employee : employees) {
+            if (employee.getEmployeeID() > maxID) {
+                maxID = employee.getEmployeeID();
+            }
+        }
+        return maxID + 1;
+    }
+
+    public int createNextUserID() {
+        int maxID = 0;
+        for (Customer customer : customers) {
+            if (customer.getUserID() > maxID) {
+                maxID = customer.getUserID();
+            }
+        }
+        for (Employee employee : employees) {
+            if (employee.getUserID() > maxID) {
+                maxID = employee.getUserID();
+            }
+        }
+        return maxID + 1;
+    }
+
     public void addRentalContractIfMissing(RentalContract contract) {
         if (contract != null && !rentalContracts.contains(contract)) {
             rentalContracts.add(contract);
@@ -228,6 +265,33 @@ public class AppState {
     public void addPaymentIfMissing(Payment payment) {
         if (payment != null && !payments.contains(payment)) {
             payments.add(payment);
+        }
+    }
+
+    public void addMaintenanceTaskIfMissing(MaintenanceTask task) {
+        if (task != null && !maintenanceTasks.contains(task)) {
+            maintenanceTasks.add(task);
+        }
+    }
+
+    public void addBranchReportIfMissing(BranchReport report) {
+        if (report != null && !branchReports.contains(report)) {
+            branchReports.add(report);
+        }
+    }
+
+    public void addEmployeeIfMissing(Employee employee) {
+        if (employee != null && !employees.contains(employee)) {
+            employees.add(employee);
+            refreshEmployeeRoleLists();
+        }
+    }
+
+    public void applyMaintenanceStatusRules() {
+        for (Vehicle vehicle : vehicles) {
+            if (vehicle.getStatus() == VehicleStatus.AVAILABLE && vehicle.needsMaintenance()) {
+                vehicle.setStatus(VehicleStatus.OUT_OF_SERVICE);
+            }
         }
     }
 

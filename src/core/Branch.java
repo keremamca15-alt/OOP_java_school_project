@@ -80,7 +80,14 @@ public class Branch {
 	}
 
 	public void setBranchManager(BranchManager branchManager) {
+		if (this.branchManager == branchManager) {
+			return;
+		}
+		BranchManager previousManager = this.branchManager;
 		this.branchManager = branchManager;
+		if (previousManager != null && previousManager.getManagedBranch() == this) {
+			previousManager.setManagedBranch(null);
+		}
 		if (branchManager != null && branchManager.getManagedBranch() != this) {
 			branchManager.setManagedBranch(this);
 		}
@@ -122,13 +129,12 @@ public class Branch {
 	 * @param vehicleID
 	 */
 	public void removeVehicle(int vehicleID) {
-		for (Vehicle vehicle : vehicles) {
+		for (Vehicle vehicle : new ArrayList<>(vehicles)) {
 			if (vehicle.getVehicleID() == vehicleID) {
 				vehicle.setBranch(null);
 				break;
 			}
 		}
-		vehicles.removeIf(vehicle -> vehicle.getVehicleID() == vehicleID);
 	}
 
 	public void addBranchReport(BranchReport report) {

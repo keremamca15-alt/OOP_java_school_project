@@ -428,8 +428,6 @@ public class CustomerPanel extends JPanel {
             info.add(new JLabel("Loyalty Tier:   -"));
             info.add(new JLabel("Loyalty Points: -"));
         }
-        info.add(new JLabel(" "));
-        info.add(new JLabel("Tier benefits and point redemption options will appear here."));
 
         tab.add(info);
         return tab;
@@ -471,8 +469,8 @@ public class CustomerPanel extends JPanel {
 
     private DefaultTableModel createReservationTableModel() {
         return new DefaultTableModel(
-                new Object[]{"ID", "Vehicle", "Start Date", "End Date", "Status", "Addons", "Estimated Total",
-                        "Prepayment", "Deposit"},
+                new Object[]{"ID", "Vehicle", "Start Date", "End Date", "Status", "Addons", "Total",
+                        "Paid", "Remaining", "Deposit"},
                 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -539,8 +537,9 @@ public class CustomerPanel extends JPanel {
                     formatDate(reservation.getEndDate()),
                     reservation.getStatus(),
                     formatAddonNames(reservation.getAddons()),
-                    calculateEstimatedTotal(reservation),
-                    reservation.getPrePaymentAmount(),
+                    calculateReservationTotal(reservation),
+                    calculateReservationPaid(reservation),
+                    calculateReservationRemaining(reservation),
                     reservation.getDepositAmount()
             });
         }
@@ -762,6 +761,45 @@ public class CustomerPanel extends JPanel {
             return 0;
         }
         return payment.getInvoice().getInvoiceID();
+    }
+
+    private double calculateReservationTotal(Reservation reservation) {
+        Invoice invoice = getInvoice(reservation);
+        if (invoice != null) {
+            return invoice.calculateTotal();
+        }
+        return calculateEstimatedTotal(reservation);
+    }
+
+    private double calculateReservationPaid(Reservation reservation) {
+        Invoice invoice = getInvoice(reservation);
+        if (invoice != null) {
+            return invoice.calculatePaidAmount();
+        }
+        if (reservation.getPrepayment() != null && reservation.getPrepayment().processPayment()) {
+            return reservation.getPrepayment().getAmount();
+        }
+        return reservation.getPrePaymentAmount();
+    }
+
+    private double calculateReservationRemaining(Reservation reservation) {
+        Invoice invoice = getInvoice(reservation);
+        if (invoice != null) {
+            RentalContract contract = invoice.getRentalContract();
+            return calculateCustomerRemaining(invoice, contract);
+        }
+        double remaining = calculateEstimatedTotal(reservation) - calculateReservationPaid(reservation);
+        if (remaining < 0) {
+            return 0.0;
+        }
+        return remaining;
+    }
+
+    private Invoice getInvoice(Reservation reservation) {
+        if (reservation == null || reservation.getRentalContract() == null) {
+            return null;
+        }
+        return reservation.getRentalContract().getInvoice();
     }
 
     private double calculateEstimatedTotal(Reservation reservation) {

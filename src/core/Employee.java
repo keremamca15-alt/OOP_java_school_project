@@ -42,6 +42,12 @@ public abstract class Employee extends User {
 	}
 
 	public void setBranch(Branch branch) {
+		if (this.branch == branch) {
+			return;
+		}
+		if (this.branch != null) {
+			this.branch.getEmployees().remove(this);
+		}
 		this.branch = branch;
 		if (branch != null && !branch.getEmployees().contains(this)) {
 			branch.getEmployees().add(this);
