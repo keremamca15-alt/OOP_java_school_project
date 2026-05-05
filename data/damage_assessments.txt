@@ -5,3 +5,4 @@
 5|109|12|6|2026-03-24|Rear door paint damage after return|230.0
 6|111|14|8|2026-04-05|Small windshield chip|150.0
 7|103|10|10|2026-04-23|Cargo area side panel dent|340.0
+8|105|10|11|2026-05-05|çizik|1.0

@@ -1,7 +1,6 @@
 package gui;
 
 import core.Branch;
-import core.DamageAssessment;
 import core.MaintenanceStatus;
 import core.MaintenanceTask;
 import core.Mechanic;
@@ -32,7 +31,6 @@ import java.awt.GridLayout;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class MechanicPanel extends JPanel {
@@ -351,35 +349,13 @@ public class MechanicPanel extends JPanel {
                         + "Distance to next maintenance: "
                         + String.format("%.0f", vehicle.calculateDistanceToNextMaintenance()) + "\n"
                         + "Needs maintenance: " + vehicle.needsMaintenance() + "\n"
-                        + "Unresolved damage: " + hasUnresolvedDamage(vehicle));
+                        + "Unresolved damage: " + vehicle.hasUnresolvedDamage());
     }
 
     private boolean isEligibleForMaintenance(MainFrame frame, Vehicle vehicle) {
         return vehicle != null
                 && vehicle.getBranch() == getMechanicBranch(frame)
-                && (vehicle.needsMaintenance() || hasUnresolvedDamage(vehicle));
-    }
-
-    private boolean hasUnresolvedDamage(Vehicle vehicle) {
-        Date latestCompletedMaintenanceDate = null;
-        for (MaintenanceTask task : vehicle.getMaintenanceTasks()) {
-            if (task.getStatus() == MaintenanceStatus.COMPLETED && task.getMaintenanceDate() != null
-                    && (latestCompletedMaintenanceDate == null
-                            || task.getMaintenanceDate().after(latestCompletedMaintenanceDate))) {
-                latestCompletedMaintenanceDate = task.getMaintenanceDate();
-            }
-        }
-
-        ArrayList<DamageAssessment> assessments = vehicle.getDamageAssessments();
-        for (DamageAssessment assessment : assessments) {
-            if (assessment.getDamageCost() > 0
-                    && assessment.getAssessmentDate() != null
-                    && (latestCompletedMaintenanceDate == null
-                            || assessment.getAssessmentDate().after(latestCompletedMaintenanceDate))) {
-                return true;
-            }
-        }
-        return false;
+                && (vehicle.needsMaintenance() || vehicle.hasUnresolvedDamage());
     }
 
     private MaintenanceTask getSelectedTask(JTable table, DefaultTableModel model) {

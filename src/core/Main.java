@@ -138,25 +138,25 @@ public class Main {
 
 		Reservation completedWithRefund = reservation(1, ayse, v101,
 				date(2026, Calendar.APRIL, 10), date(2026, Calendar.APRIL, 13),
-				ReservationStatus.COMPLETED, 148.5, 300.0, data.addons.get(0), data.addons.get(1));
+				ReservationStatus.COMPLETED, 300.0, data.addons.get(0), data.addons.get(1));
 		Reservation completedWithCharge = reservation(2, mehmet, v104,
 				date(2026, Calendar.APRIL, 15), date(2026, Calendar.APRIL, 19),
-				ReservationStatus.COMPLETED, 558.0, 300.0, data.addons.get(2));
+				ReservationStatus.COMPLETED, 300.0, data.addons.get(2));
 		Reservation active = reservation(3, zeynep, v102,
 				date(2026, Calendar.MAY, 5), date(2026, Calendar.MAY, 9),
-				ReservationStatus.CONFIRMED, 306.0, 300.0, data.addons.get(4));
+				ReservationStatus.CONFIRMED, 300.0, data.addons.get(4));
 		Reservation pending = reservation(4, ayse, v106,
 				date(2026, Calendar.JUNE, 5), date(2026, Calendar.JUNE, 9),
-				ReservationStatus.PENDING, 352.0, 300.0, data.addons.get(1));
+				ReservationStatus.PENDING, 300.0, data.addons.get(1));
 		Reservation confirmed = reservation(5, deniz, v108,
 				date(2026, Calendar.JUNE, 8), date(2026, Calendar.JUNE, 11),
-				ReservationStatus.CONFIRMED, 499.5, 300.0, data.addons.get(2), data.addons.get(4));
+				ReservationStatus.CONFIRMED, 300.0, data.addons.get(2), data.addons.get(4));
 		Reservation cancelled = reservation(6, emre, v107,
 				date(2026, Calendar.APRIL, 3), date(2026, Calendar.APRIL, 5),
-				ReservationStatus.CANCELLED, 0.0, 0.0);
+				ReservationStatus.CANCELLED, 0.0);
 		Reservation futureConflict = reservation(7, elif, v101,
 				date(2026, Calendar.JULY, 1), date(2026, Calendar.JULY, 5),
-				ReservationStatus.CONFIRMED, 178.2, 300.0, data.addons.get(0));
+				ReservationStatus.CONFIRMED, 300.0, data.addons.get(0));
 		data.reservations.add(completedWithRefund);
 		data.reservations.add(completedWithCharge);
 		data.reservations.add(active);
@@ -200,12 +200,10 @@ public class Main {
 		data.damageAssessments.add(assessment2);
 		data.damageAssessments.add(unresolved);
 
-		Invoice invoice1 = invoice(1, contract1, assessment1, 165.0, 120.0, 37.5, 0.0);
-		invoice1.applyDiscount(ayse);
-		invoice1.calculateTotal();
-		Invoice invoice2 = invoice(2, contract2, assessment2, 700.0, 520.0, 48.0, 780.0);
-		invoice2.applyDiscount(mehmet);
-		invoice2.calculateTotal();
+		Invoice invoice1 = invoice(1, contract1, assessment1, 120.0, 0.0);
+		finalizeInvoice(invoice1, ayse);
+		Invoice invoice2 = invoice(2, contract2, assessment2, 520.0, 780.0);
+		finalizeInvoice(invoice2, mehmet);
 		data.invoices.add(invoice1);
 		data.invoices.add(invoice2);
 
@@ -216,35 +214,35 @@ public class Main {
 
 		addCompletedRental(data, 8, 4, 3, 12, 13, 14, 0, bora, v106, ozan,
 				date(2026, Calendar.MARCH, 2), date(2026, Calendar.MARCH, 5),
-				279.0, 300.0, 48200, 48650, 294.0, 0.0, 15.0, 0.0,
+				300.0, 48200, 48650, 0.0, 0.0,
 				"", data.addons.get(1));
 		addCompletedRental(data, 9, 5, 4, 15, 16, 17, 4, ceren, v107, ozan,
 				date(2026, Calendar.MARCH, 8), date(2026, Calendar.MARCH, 12),
-				238.0, 300.0, 36200, 37150, 248.0, 80.0, 30.0, 1100.0,
+				300.0, 36200, 37150, 80.0, 1100.0,
 				"Lost key and deep interior cleaning", data.addons.get(0));
 		addCompletedRental(data, 10, 6, 5, 18, 19, 20, 0, umut, v108, melis,
 				date(2026, Calendar.MARCH, 14), date(2026, Calendar.MARCH, 18),
-				724.0, 300.0, 22200, 22640, 760.0, 0.0, 48.0, 0.0,
+				300.0, 22200, 22640, 0.0, 0.0,
 				"", data.addons.get(2));
 		addCompletedRental(data, 11, 7, 6, 21, 22, 23, 5, irem, v109, melis,
 				date(2026, Calendar.MARCH, 20), date(2026, Calendar.MARCH, 24),
-				438.0, 300.0, 43200, 43980, 510.0, 230.0, 24.0, 380.0,
+				300.0, 43200, 43980, 230.0, 380.0,
 				"Rear door paint damage after return", data.addons.get(4));
 		addCompletedRental(data, 12, 8, 7, 24, 25, 26, 0, tolga, v110, can,
 				date(2026, Calendar.MARCH, 25), date(2026, Calendar.MARCH, 27),
-				136.0, 300.0, 7100, 7350, 136.0, 0.0, 0.0, 0.0,
+				300.0, 7100, 7350, 0.0, 0.0,
 				"");
 		addCompletedRental(data, 13, 9, 8, 27, 28, 29, 6, asya, v111, naz,
 				date(2026, Calendar.APRIL, 1), date(2026, Calendar.APRIL, 5),
-				421.2, 300.0, 24800, 25540, 410.0, 150.0, 96.0, 280.0,
+				300.0, 24800, 25540, 150.0, 280.0,
 				"Small windshield chip", data.addons.get(2), data.addons.get(5));
 		addCompletedRental(data, 14, 10, 9, 30, 31, 32, 0, deniz, v112, ece,
 				date(2026, Calendar.APRIL, 6), date(2026, Calendar.APRIL, 9),
-				415.5, 300.0, 67100, 67580, 495.0, 0.0, 54.0, 0.0,
+				300.0, 67100, 67580, 0.0, 0.0,
 				"", data.addons.get(5));
 		addCompletedRental(data, 15, 11, 10, 33, 34, 35, 7, elif, v103, ece,
 				date(2026, Calendar.APRIL, 20), date(2026, Calendar.APRIL, 23),
-				281.7, 300.0, 86200, 87040, 315.0, 340.0, 24.0, 960.0,
+				300.0, 86200, 87040, 340.0, 960.0,
 				"Cargo area side panel dent", data.addons.get(6));
 
 		MaintenanceTask completedTask = maintenance(1, v105, mert, date(2026, Calendar.APRIL, 28),
@@ -351,14 +349,16 @@ public class Main {
 	}
 
 	private static Reservation reservation(int reservationID, Customer customer, Vehicle vehicle, Date startDate,
-			Date endDate, ReservationStatus status, double prepaymentAmount, double depositAmount, Addon... addons) {
+			Date endDate, ReservationStatus status, double depositAmount, Addon... addons) {
 		Reservation reservation = new Reservation(reservationID, startDate, endDate, status);
 		reservation.setCustomer(customer);
 		reservation.setVehicle(vehicle);
-		reservation.setPrePaymentAmount(prepaymentAmount);
 		reservation.setDepositAmount(depositAmount);
 		for (Addon addon : addons) {
 			reservation.addAddon(addon);
+		}
+		if (status != ReservationStatus.CANCELLED) {
+			reservation.setPrePaymentAmount(roundMoney(calculatePrepayment(reservation)));
 		}
 		return reservation;
 	}
@@ -387,8 +387,11 @@ public class Main {
 		return assessment;
 	}
 
-	private static Invoice invoice(int id, RentalContract contract, DamageAssessment assessment, double base,
-			double damageFee, double addonFee, double additionalCharges) {
+	private static Invoice invoice(int id, RentalContract contract, DamageAssessment assessment, double damageFee,
+			double additionalCharges) {
+		int days = contract.getReservation().calculateDuration();
+		double base = contract.getReservation().getVehicle().calculateRentalCost(days);
+		double addonFee = calculateAddonCost(contract.getAddons(), days);
 		Invoice invoice = new Invoice(id, base, damageFee, addonFee);
 		invoice.setRentalContract(contract);
 		invoice.setDamageAssessment(assessment);
@@ -405,7 +408,7 @@ public class Main {
 	}
 
 	private static void addPrepayment(SeedData data, int paymentID, Reservation reservation) {
-		Payment payment = new Payment(paymentID, reservation.getPrePaymentAmount(), reservation.getStartDate(),
+		Payment payment = new Payment(paymentID, roundMoney(reservation.getPrePaymentAmount()), reservation.getStartDate(),
 				PaymentPurpose.PREPAYMENT, reservation.getCustomer().getUserID());
 		payment.setCustomer(reservation.getCustomer());
 		payment.setReservation(reservation);
@@ -431,7 +434,7 @@ public class Main {
 		if (amount <= 0) {
 			return;
 		}
-		Payment payment = new Payment(paymentID, amount, contract.getActualReturnDate(), PaymentPurpose.REFUND,
+		Payment payment = new Payment(paymentID, roundMoney(amount), contract.getActualReturnDate(), PaymentPurpose.REFUND,
 				customer.getUserID());
 		payment.setCustomer(customer);
 		payment.setRentalContract(contract);
@@ -444,7 +447,7 @@ public class Main {
 		if (amount <= 0) {
 			return;
 		}
-		Payment payment = new Payment(paymentID, amount, contract.getActualReturnDate(),
+		Payment payment = new Payment(paymentID, roundMoney(amount), contract.getActualReturnDate(),
 				PaymentPurpose.ADDITIONAL_CHARGE, customer.getUserID());
 		payment.setCustomer(customer);
 		payment.setRentalContract(contract);
@@ -454,11 +457,11 @@ public class Main {
 
 	private static void addCompletedRental(SeedData data, int reservationID, int contractID, int invoiceID,
 			int prepaymentID, int depositPaymentID, int settlementPaymentID, int assessmentID, Customer customer,
-			Vehicle vehicle, RentalAgent agent, Date startDate, Date endDate, double prepaymentAmount,
-			double depositAmount, int initialMileage, int finalMileage, double baseAmount, double damageFee,
-			double addonFee, double additionalCharges, String damageDescription, Addon... addons) {
+			Vehicle vehicle, RentalAgent agent, Date startDate, Date endDate, double depositAmount,
+			int initialMileage, int finalMileage, double damageFee, double additionalCharges, String damageDescription,
+			Addon... addons) {
 		Reservation reservation = reservation(reservationID, customer, vehicle, startDate, endDate,
-				ReservationStatus.COMPLETED, prepaymentAmount, depositAmount, addons);
+				ReservationStatus.COMPLETED, depositAmount, addons);
 		data.reservations.add(reservation);
 		addPrepayment(data, prepaymentID, reservation);
 
@@ -473,9 +476,8 @@ public class Main {
 			data.damageAssessments.add(assessment);
 		}
 
-		Invoice invoice = invoice(invoiceID, contract, assessment, baseAmount, damageFee, addonFee, additionalCharges);
-		invoice.applyDiscount(customer);
-		invoice.calculateTotal();
+		Invoice invoice = invoice(invoiceID, contract, assessment, damageFee, additionalCharges);
+		finalizeInvoice(invoice, customer);
 		data.invoices.add(invoice);
 		addInvoicePayment(data, invoice, reservation.getPrepayment());
 
@@ -489,6 +491,37 @@ public class Main {
 		if (refund > 0) {
 			addRefund(data, settlementPaymentID, contract, invoice, customer, refund);
 		}
+	}
+
+	private static double calculatePrepayment(Reservation reservation) {
+		int days = reservation.calculateDuration();
+		Vehicle vehicle = reservation.getVehicle();
+		double rentalCost = vehicle.calculateRentalCost(days);
+		double discount = 0.0;
+		Customer customer = reservation.getCustomer();
+		if (customer != null && customer.getLoyaltyTier() != null) {
+			discount = rentalCost * customer.getLoyaltyTier().getDiscountRate();
+		}
+		return rentalCost - discount + calculateAddonCost(reservation.getAddons(), days);
+	}
+
+	private static double calculateAddonCost(ArrayList<Addon> addons, int days) {
+		double total = 0.0;
+		for (Addon addon : addons) {
+			total += addon.calculateCost(days);
+		}
+		return total;
+	}
+
+	private static void finalizeInvoice(Invoice invoice, Customer customer) {
+		invoice.applyDiscount(customer);
+		invoice.setDiscountAmount(roundMoney(invoice.getDiscountAmount()));
+		invoice.calculateTotal();
+		invoice.setTotalAmount(roundMoney(invoice.getTotalAmount()));
+	}
+
+	private static double roundMoney(double amount) {
+		return Math.round(amount * 100.0) / 100.0;
 	}
 
 	private static ArrayList<RentalAgent> getRentalAgents(ArrayList<Employee> employees) {

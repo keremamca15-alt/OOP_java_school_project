@@ -243,6 +243,9 @@ public abstract class Vehicle {
 		if (status != VehicleStatus.AVAILABLE) {
 			return false;
 		}
+		if (hasUnresolvedDamage()) {
+			return false;
+		}
 
 		for (Reservation reservation : reservations) {
 			if (reservation.getStatus() == ReservationStatus.CANCELLED) {
@@ -272,6 +275,27 @@ public abstract class Vehicle {
 
 	public boolean needsMaintenance() {
 		return calculateDistanceToNextMaintenance() <= 0;
+	}
+
+	public boolean hasUnresolvedDamage() {
+		Date latestCompletedMaintenanceDate = null;
+		for (MaintenanceTask task : maintenanceTasks) {
+			if (task.getStatus() == MaintenanceStatus.COMPLETED && task.getMaintenanceDate() != null
+					&& (latestCompletedMaintenanceDate == null
+							|| task.getMaintenanceDate().after(latestCompletedMaintenanceDate))) {
+				latestCompletedMaintenanceDate = task.getMaintenanceDate();
+			}
+		}
+
+		for (DamageAssessment assessment : damageAssessments) {
+			if (assessment.getDamageCost() > 0
+					&& assessment.getAssessmentDate() != null
+					&& (latestCompletedMaintenanceDate == null
+							|| assessment.getAssessmentDate().after(latestCompletedMaintenanceDate))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

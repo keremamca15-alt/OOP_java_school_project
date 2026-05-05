@@ -10,3 +10,4 @@
 10|Irem|Ozkan|irem.ozkan@example.com|1820|GOLD
 11|Tolga|Ergin|tolga.ergin@example.com|90|BRONZE
 12|Asya|Kaplan|asya.kaplan@example.com|2540|GOLD
+1032|kerem|amca|keremamca@gmail.com|14|BRONZE
