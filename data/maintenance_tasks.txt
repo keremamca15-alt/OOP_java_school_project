@@ -1,27 +1,3 @@
-1|103|20|2026-05-06|Oil and brake inspection|SCHEDULED
-2|104|21|2026-05-09|Tire replacement|IN_PROGRESS
-3|105|22|2026-05-12|Engine diagnostic|COMPLETED
-4|106|23|2026-05-15|Interior and safety check|SCHEDULED
-5|107|24|2026-05-18|Battery inspection|IN_PROGRESS
-6|108|20|2026-05-21|Oil and brake inspection|COMPLETED
-7|109|21|2026-05-24|Tire replacement|SCHEDULED
-8|110|22|2026-05-27|Engine diagnostic|IN_PROGRESS
-9|111|23|2026-05-30|Interior and safety check|COMPLETED
-10|112|24|2026-06-02|Battery inspection|SCHEDULED
-11|113|20|2026-06-05|Oil and brake inspection|IN_PROGRESS
-12|114|21|2026-06-08|Tire replacement|COMPLETED
-13|115|22|2026-06-11|Engine diagnostic|SCHEDULED
-14|116|23|2026-06-14|Interior and safety check|IN_PROGRESS
-15|117|24|2026-06-17|Battery inspection|COMPLETED
-16|118|20|2026-06-20|Oil and brake inspection|SCHEDULED
-17|119|21|2026-06-23|Tire replacement|IN_PROGRESS
-18|120|22|2026-06-26|Engine diagnostic|COMPLETED
-19|121|23|2026-06-29|Interior and safety check|SCHEDULED
-20|122|24|2026-07-02|Battery inspection|IN_PROGRESS
-21|123|20|2026-07-05|Oil and brake inspection|COMPLETED
-22|124|21|2026-07-08|Tire replacement|SCHEDULED
-23|125|22|2026-07-11|Engine diagnostic|IN_PROGRESS
-24|126|23|2026-07-14|Interior and safety check|COMPLETED
-25|127|24|2026-07-17|Battery inspection|SCHEDULED
-26|112|20|2026-05-05|kontorl edilecek|COMPLETED
-27|161|20|2026-05-05|kontrol|COMPLETED
+1|105|20|2026-04-28|Oil and filter service completed|COMPLETED
+2|103|20|2026-05-06|Mileage based full inspection|SCHEDULED
+3|109|22|2026-04-25|Brake check completed|COMPLETED
