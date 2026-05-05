@@ -280,6 +280,12 @@ public class AppState {
         }
     }
 
+    public void addCustomerIfMissing(Customer customer) {
+        if (customer != null && !customers.contains(customer)) {
+            customers.add(customer);
+        }
+    }
+
     public void addEmployeeIfMissing(Employee employee) {
         if (employee != null && !employees.contains(employee)) {
             employees.add(employee);

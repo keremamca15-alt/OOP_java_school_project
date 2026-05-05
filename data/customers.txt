@@ -98,3 +98,4 @@
 98|Mehmet7|Yilmaz|mehmet7.yilmaz@example.com|1881|GOLD
 99|Zeynep7|Kaya|zeynep7.kaya@example.com|422|BRONZE
 100|Emre7|Celik|emre7.celik@example.com|958|SILVER
+1037|merek|amca|kerem@|0|BRONZE

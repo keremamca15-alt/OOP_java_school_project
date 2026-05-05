@@ -97,6 +97,7 @@ public class GuestPanel extends JPanel {
             try {
                 Date startDate = parseDate(startDateField.getText());
                 Date endDate = parseDate(endDateField.getText());
+                validateDateRange(startDate, endDate);
                 Customer guestSearch = new Customer();
                 ArrayList<Vehicle> vehicles = guestSearch.searchAvailableVehicles(branch, startDate, endDate);
                 fillVehicleTable(model, vehicles);
@@ -197,6 +198,15 @@ public class GuestPanel extends JPanel {
         return DATE_FORMAT.parse(value.trim());
     }
 
+    private void validateDateRange(Date startDate, Date endDate) {
+        if (!endDate.after(startDate)) {
+            throw new IllegalArgumentException("End date must be after start date.");
+        }
+        if (startOfDay(startDate).before(startOfDay(new Date()))) {
+            throw new IllegalArgumentException("Start date cannot be in the past.");
+        }
+    }
+
     private String formatDate(Date date) {
         return DATE_FORMAT.format(date);
     }
@@ -204,6 +214,16 @@ public class GuestPanel extends JPanel {
     private Date daysFromToday(int days) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, days);
+        return calendar.getTime();
+    }
+
+    private Date startOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTime();
     }
 }

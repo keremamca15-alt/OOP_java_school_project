@@ -1,5 +1,9 @@
 package gui;
 
+import core.Customer;
+import core.Employee;
+import core.LoyaltyTier;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,7 +20,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
+import java.io.FileNotFoundException;
 
 public class WelcomePanel extends JPanel {
 
@@ -26,7 +32,7 @@ public class WelcomePanel extends JPanel {
 
         JPanel shell = new JPanel(new BorderLayout());
         shell.setBackground(Color.WHITE);
-        shell.setPreferredSize(new Dimension(520, 430));
+        shell.setPreferredSize(new Dimension(520, 480));
         shell.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(205, 211, 220), 1),
                 BorderFactory.createEmptyBorder(0, 0, 0, 0)));
@@ -90,6 +96,12 @@ public class WelcomePanel extends JPanel {
             frame.login(username);
         });
 
+        JButton registerBtn = new JButton("Register Customer");
+        registerBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        registerBtn.setMaximumSize(new Dimension(Short.MAX_VALUE, 38));
+        registerBtn.setFocusPainted(false);
+        registerBtn.addActionListener(e -> registerCustomer(frame));
+
         JPanel separatorRow = new JPanel();
         separatorRow.setLayout(new BoxLayout(separatorRow, BoxLayout.X_AXIS));
         separatorRow.setOpaque(false);
@@ -114,7 +126,9 @@ public class WelcomePanel extends JPanel {
         form.add(usernameField);
         form.add(Box.createRigidArea(new Dimension(0, 16)));
         form.add(loginBtn);
-        form.add(Box.createRigidArea(new Dimension(0, 18)));
+        form.add(Box.createRigidArea(new Dimension(0, 10)));
+        form.add(registerBtn);
+        form.add(Box.createRigidArea(new Dimension(0, 16)));
         form.add(separatorRow);
         form.add(Box.createRigidArea(new Dimension(0, 16)));
         form.add(guestBtn);
@@ -125,5 +139,113 @@ public class WelcomePanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(20, 20, 20, 20);
         add(shell, gbc);
+    }
+
+    private void registerCustomer(MainFrame frame) {
+        JTextField nameField = new JTextField(16);
+        JTextField surnameField = new JTextField(16);
+        JTextField emailField = new JTextField(22);
+
+        JPanel form = new JPanel(new GridLayout(0, 2, 8, 8));
+        form.add(new JLabel("Name"));
+        form.add(nameField);
+        form.add(new JLabel("Surname"));
+        form.add(surnameField);
+        form.add(new JLabel("Email"));
+        form.add(emailField);
+
+        int result = JOptionPane.showConfirmDialog(this, form, "Register Customer", JOptionPane.OK_CANCEL_OPTION);
+        if (result != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        String name = nameField.getText().trim();
+        String surname = surnameField.getText().trim();
+        String email = emailField.getText().trim();
+        if (name.isEmpty() || surname.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Name, surname and email cannot be empty.",
+                    "Register",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (isEmailUsed(frame, email)) {
+            JOptionPane.showMessageDialog(this,
+                    "This email is already used.",
+                    "Register",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (isFullNameUsed(frame, name, surname)) {
+            JOptionPane.showMessageDialog(this,
+                    "This full name is already used.",
+                    "Register",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            Customer customer = new Customer(
+                    frame.appState().createNextUserID(),
+                    name,
+                    surname,
+                    email,
+                    0,
+                    LoyaltyTier.BRONZE);
+            frame.appState().addCustomerIfMissing(customer);
+            frame.appState().saveAll();
+            frame.session().clear();
+            frame.session().setUsername(customer.getName() + " " + customer.getSurname());
+            frame.session().setCustomer(customer);
+            frame.showDashboard(Session.ROLE_CUSTOMER);
+        } catch (FileNotFoundException exception) {
+            JOptionPane.showMessageDialog(this,
+                    "Customer registered but data could not be saved:\n" + exception.getMessage(),
+                    "Register",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalArgumentException exception) {
+            JOptionPane.showMessageDialog(this,
+                    exception.getMessage(),
+                    "Register",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private boolean isEmailUsed(MainFrame frame, String email) {
+        for (Customer customer : frame.appState().getCustomers()) {
+            if (customer.getEmail() != null && customer.getEmail().equalsIgnoreCase(email)) {
+                return true;
+            }
+        }
+        for (Employee employee : frame.appState().getEmployees()) {
+            if (employee.getEmail() != null && employee.getEmail().equalsIgnoreCase(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFullNameUsed(MainFrame frame, String name, String surname) {
+        String fullName = normalize(name + " " + surname);
+        for (Customer customer : frame.appState().getCustomers()) {
+            if (normalize(customer.getName() + " " + customer.getSurname()).equals(fullName)) {
+                return true;
+            }
+        }
+        for (Employee employee : frame.appState().getEmployees()) {
+            if (normalize(employee.getName() + " " + employee.getSurname()).equals(fullName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String normalize(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.trim().toLowerCase().replaceAll("\\s+", " ");
     }
 }

@@ -409,6 +409,9 @@ public class FileManager {
 			for (int paymentID : parseIDList(filePath, line, parts[10])) {
 				Payment payment = findPaymentByID(payments, paymentID);
 				validateFound(filePath, line, "Payment", paymentID, payment);
+				if (payment.getRentalContract() == null) {
+					payment.setRentalContract(contract);
+				}
 				invoice.addPayment(payment);
 			}
 			invoices.add(invoice);

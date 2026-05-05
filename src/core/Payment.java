@@ -117,6 +117,9 @@ public class Payment {
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
+		if (invoice != null && rentalContract == null && invoice.getRentalContract() != null) {
+			setRentalContract(invoice.getRentalContract());
+		}
 		if (invoice != null && !invoice.getPayments().contains(this)) {
 			invoice.addPayment(this);
 		}

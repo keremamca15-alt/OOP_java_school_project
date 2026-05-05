@@ -3,6 +3,7 @@ package gui;
 import core.Addon;
 import core.Branch;
 import core.BranchNotFoundException;
+import core.ContractStatus;
 import core.Customer;
 import core.Invoice;
 import core.InvalidReservationException;
@@ -193,6 +194,7 @@ public class CustomerPanel extends JPanel {
                 }
                 Date startDate = parseDate(startDateField.getText());
                 Date endDate = parseDate(endDateField.getText());
+                validateDateRange(startDate, endDate);
                 currentSearchResults.clear();
                 currentSearchResults.addAll(customer.searchAvailableVehicles(branch, startDate, endDate));
                 fillVehicleTable(vehicleModel, currentSearchResults);
@@ -236,6 +238,7 @@ public class CustomerPanel extends JPanel {
             try {
                 Date startDate = parseDate(startDateField.getText());
                 Date endDate = parseDate(endDateField.getText());
+                validateDateRange(startDate, endDate);
                 Reservation reservation = customer.makeReservation(
                         frame.appState().createNextReservationID(),
                         vehicle,
@@ -854,6 +857,14 @@ public class CustomerPanel extends JPanel {
                     JOptionPane.INFORMATION_MESSAGE);
             return;
         }
+        RentalContract contract = reservation.getRentalContract();
+        if (contract != null && contract.getStatus() == ContractStatus.ACTIVE) {
+            JOptionPane.showMessageDialog(this,
+                    "Active contract reservations cannot be cancelled.",
+                    "Cancel Reservation",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         reservation.cancelReservation();
         fillReservationTable(reservationModel, customer);
@@ -906,6 +917,15 @@ public class CustomerPanel extends JPanel {
         return DATE_FORMAT.parse(value.trim());
     }
 
+    private void validateDateRange(Date startDate, Date endDate) {
+        if (!endDate.after(startDate)) {
+            throw new IllegalArgumentException("End date must be after start date.");
+        }
+        if (startOfDay(startDate).before(startOfDay(new Date()))) {
+            throw new IllegalArgumentException("Start date cannot be in the past.");
+        }
+    }
+
     private String formatDate(Date date) {
         if (date == null) {
             return "";
@@ -916,6 +936,16 @@ public class CustomerPanel extends JPanel {
     private Date daysFromToday(int days) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, days);
+        return calendar.getTime();
+    }
+
+    private Date startOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTime();
     }
 }
