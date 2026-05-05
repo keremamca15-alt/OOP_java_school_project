@@ -6,6 +6,6 @@ example/
 *.exe
 *.tmp
 .claude
-
+out/
 .vscode
 

@@ -71,8 +71,12 @@ public class Customer extends User {
 		}
 	}
 
-	public ArrayList<Vehicle> searchAvailableVehicles(Branch branch, Date startDate, Date endDate) {
-		if (branch == null || !isValidDateRange(startDate, endDate)) {
+	public ArrayList<Vehicle> searchAvailableVehicles(Branch branch, Date startDate, Date endDate)
+			throws BranchNotFoundException {
+		if (branch == null) {
+			throw new BranchNotFoundException("Branch cannot be found.");
+		}
+		if (!isValidDateRange(startDate, endDate)) {
 			return new ArrayList<>();
 		}
 		return branch.findAvailableVehicles(startDate, endDate);

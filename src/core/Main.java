@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException, InvalidFileFormatException,
-			InvalidReservationException, VehicleNotAvailableException {
+			InvalidReservationException, VehicleNotAvailableException, BranchNotFoundException {
 		Date startDate = createDate(2026, Calendar.MAY, 10);
 		Date endDate = createDate(2026, Calendar.MAY, 14);
 		Date searchStartDate = createDate(2026, Calendar.MAY, 11);

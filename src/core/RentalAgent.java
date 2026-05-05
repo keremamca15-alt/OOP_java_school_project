@@ -138,7 +138,12 @@ public class RentalAgent extends Employee {
 
 		contract.setInvoice(invoice);
 		contract.closeContract();
-		vehicle.setStatus(VehicleStatus.AVAILABLE);
+		vehicle.setCurrentMileage(contract.getFinalMileage());
+		if (vehicle.needsMaintenance()) {
+			vehicle.setStatus(VehicleStatus.OUT_OF_SERVICE);
+		} else {
+			vehicle.setStatus(VehicleStatus.AVAILABLE);
+		}
 		reservation.setStatus(ReservationStatus.COMPLETED);
 		return invoice;
 	}

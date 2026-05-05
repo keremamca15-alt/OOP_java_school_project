@@ -23,3 +23,5 @@
 23|125|22|2026-07-11|Engine diagnostic|IN_PROGRESS
 24|126|23|2026-07-14|Interior and safety check|COMPLETED
 25|127|24|2026-07-17|Battery inspection|SCHEDULED
+26|112|20|2026-05-05|kontorl edilecek|COMPLETED
+27|161|20|2026-05-05|kontrol|COMPLETED

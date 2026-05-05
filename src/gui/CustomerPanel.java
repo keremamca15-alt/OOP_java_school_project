@@ -2,6 +2,7 @@ package gui;
 
 import core.Addon;
 import core.Branch;
+import core.BranchNotFoundException;
 import core.Customer;
 import core.Invoice;
 import core.InvalidReservationException;
@@ -182,10 +183,18 @@ public class CustomerPanel extends JPanel {
                 return;
             }
             try {
+                Customer customer = getActiveCustomer();
+                if (customer == null) {
+                    JOptionPane.showMessageDialog(this,
+                            "No customer is logged in.",
+                            "Search",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
                 Date startDate = parseDate(startDateField.getText());
                 Date endDate = parseDate(endDateField.getText());
                 currentSearchResults.clear();
-                currentSearchResults.addAll(branch.findAvailableVehicles(startDate, endDate));
+                currentSearchResults.addAll(customer.searchAvailableVehicles(branch, startDate, endDate));
                 fillVehicleTable(vehicleModel, currentSearchResults);
                 selectedVehicle = null;
                 statusLabel.setText(currentSearchResults.size() + " available vehicles found.");
@@ -197,7 +206,7 @@ public class CustomerPanel extends JPanel {
                         "Date format must be yyyy-MM-dd.",
                         "Invalid date",
                         JOptionPane.WARNING_MESSAGE);
-            } catch (IllegalArgumentException | IllegalStateException exception) {
+            } catch (BranchNotFoundException | IllegalArgumentException | IllegalStateException exception) {
                 JOptionPane.showMessageDialog(this,
                         exception.getMessage(),
                         "Search failed",

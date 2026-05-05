@@ -98,10 +98,6 @@ public class RentalAgentPanel extends JPanel {
         logoutBtn.addActionListener(e -> frame.showWelcome());
         right.add(logoutBtn);
 
-        JButton switchUserBtn = new JButton("Switch User");
-        switchUserBtn.addActionListener(e -> frame.showWelcome());
-        right.add(switchUserBtn);
-
         header.add(left, BorderLayout.WEST);
         header.add(right, BorderLayout.EAST);
 
@@ -532,6 +528,7 @@ public class RentalAgentPanel extends JPanel {
 
         StringBuilder info = new StringBuilder();
         info.append("Initial mileage: ").append(initialMileage);
+        info.append("\nInsurance option: ").append(vehicle.getInsuranceOption());
         info.append("\nMileage policy: ").append(vehicle.getMileagePolicy());
         info.append("\nRental days: ").append(days);
 

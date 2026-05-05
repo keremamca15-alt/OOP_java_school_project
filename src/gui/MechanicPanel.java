@@ -104,10 +104,6 @@ public class MechanicPanel extends JPanel {
         logoutBtn.addActionListener(e -> frame.showWelcome());
         right.add(logoutBtn);
 
-        JButton switchUserBtn = new JButton("Switch User");
-        switchUserBtn.addActionListener(e -> frame.showWelcome());
-        right.add(switchUserBtn);
-
         header.add(left, BorderLayout.WEST);
         header.add(right, BorderLayout.EAST);
 

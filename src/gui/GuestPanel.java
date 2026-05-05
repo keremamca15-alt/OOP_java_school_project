@@ -1,6 +1,8 @@
 package gui;
 
 import core.Branch;
+import core.BranchNotFoundException;
+import core.Customer;
 import core.Vehicle;
 
 import javax.swing.BorderFactory;
@@ -95,7 +97,8 @@ public class GuestPanel extends JPanel {
             try {
                 Date startDate = parseDate(startDateField.getText());
                 Date endDate = parseDate(endDateField.getText());
-                ArrayList<Vehicle> vehicles = branch.findAvailableVehicles(startDate, endDate);
+                Customer guestSearch = new Customer();
+                ArrayList<Vehicle> vehicles = guestSearch.searchAvailableVehicles(branch, startDate, endDate);
                 fillVehicleTable(model, vehicles);
                 statusLabel.setText(vehicles.size() + " available vehicles found.");
             } catch (ParseException exception) {
@@ -103,7 +106,7 @@ public class GuestPanel extends JPanel {
                         "Date format must be yyyy-MM-dd.",
                         "Invalid date",
                         JOptionPane.WARNING_MESSAGE);
-            } catch (IllegalArgumentException | IllegalStateException exception) {
+            } catch (BranchNotFoundException | IllegalArgumentException | IllegalStateException exception) {
                 JOptionPane.showMessageDialog(this,
                         exception.getMessage(),
                         "Search failed",

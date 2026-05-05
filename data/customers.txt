@@ -1,4 +1,4 @@
-1|Ayse|Demir|ayse.demir@example.com|1411|SILVER
+1|Ayse|Demir|ayse.demir@example.com|12884|GOLD
 2|Mehmet|Yilmaz|mehmet.yilmaz@example.com|539|SILVER
 3|Zeynep|Kaya|zeynep.kaya@example.com|1394|SILVER
 4|Emre|Celik|emre.celik@example.com|630|SILVER
